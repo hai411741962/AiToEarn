@@ -212,4 +212,5 @@ export enum ResponseCode {
   // ========================================
   ApiKeyInvalid = 19000,
   RelayServerUnavailable = 19001,
+  RelayApiKeyMissing = 19002,
 }

@@ -104,23 +104,20 @@ function clearAllTimers() {
 /**
  * 根据平台类型获取授权URL
  */
-async function getAuthUrl(platform: PlatType, spaceId?: string): Promise<AuthUrlResponse | null> {
-  try {
-    const res = await startChannelAccountAuthApi(platform, { groupId: spaceId })
+async function getAuthUrl(platform: PlatType, spaceId?: string): Promise<AuthUrlResponse> {
+  const res = await startChannelAccountAuthApi(platform, { groupId: spaceId })
 
-    if (res?.code === 0 && res.data?.url && res.data.sessionId) {
-      return {
-        url: res.data.url,
-        sessionId: res.data.sessionId,
-        expiresAt: res.data.expiresAt,
-      }
-    }
-
-    return null
+  if (res?.code !== 0) {
+    throw new Error(res?.message || t('channelManager.authFailedTip'))
   }
-  catch (error) {
-    console.error(`Failed to get auth URL for ${platform}:`, error)
-    return null
+  if (!res.data?.url || !res.data.sessionId) {
+    throw new Error(t('channelManager.authFailedTip'))
+  }
+
+  return {
+    url: res.data.url,
+    sessionId: res.data.sessionId,
+    expiresAt: res.data.expiresAt,
   }
 }
 
@@ -337,18 +334,6 @@ export const useChannelManagerStore = create(
         try {
           // 获取授权URL
           const authData = await getAuthUrl(platform, targetSpaceId)
-
-          if (!authData) {
-            authWindow?.close()
-            set({
-              authState: {
-                ...get().authState,
-                error: t('channelManager.authFailedTip'),
-                isPolling: false,
-              },
-            })
-            return
-          }
 
           // 更新状态并打开授权窗口/二维码
           set({

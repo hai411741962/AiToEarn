@@ -673,4 +673,8 @@ export const messages: Record<ResponseCode, Record<Locale, MessageValue>> = {
     'en-US': 'Relay server unavailable',
     'zh-CN': '中转服务器不可用',
   },
+  [ResponseCode.RelayApiKeyMissing]: {
+    'en-US': 'Relay API Key is not configured. Configure it on the server, then retry.',
+    'zh-CN': '中转服务 API Key 未配置，请先在服务端配置后重试',
+  },
 }
