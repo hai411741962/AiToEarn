@@ -237,38 +237,44 @@ const MobileContent = memo(
           )}
 
           {/* 媒体上传区 */}
-          <ReactSortable
-            className="grid grid-cols-3 gap-2.5"
-            list={params.images}
-            animation={250}
-            setList={handleSortList}
-            scrollSensitivity={100}
-            scrollSpeed={15}
-            id="id"
-          >
-            <TransitionGroup component={null}>
-              {/* 图片列表 */}
-              {params.images.map((v, i) => (
-                <CSSTransition key={v.id || v.imgUrl} timeout={300} classNames="upload-item">
-                  <PubParmasTextuploadImage
-                    onEditClick={() => setEditImgIndex(i)}
-                    imageFile={v}
-                    onClick={() => {
-                      setPreviewData(v)
-                      setImagePreviewOpen(true)
-                    }}
-                    onClose={() => {
-                      updateImages((prevImages) => {
-                        const target = prevImages[i]
-                        if (target?.uploadTaskId)
-                          cancelUpload(target.uploadTaskId)
-                        return prevImages.filter((_, idx) => idx !== i)
-                      })
-                    }}
-                  />
-                </CSSTransition>
-              ))}
+          <div className="grid grid-cols-3 gap-2.5">
+            {/* 排序容器只管理图片，视频与上传按钮不能成为不在 list 中的可排序节点。 */}
+            {params.images.length > 0 && (
+              <ReactSortable
+                className="contents"
+                list={params.images}
+                animation={250}
+                setList={handleSortList}
+                scrollSensitivity={100}
+                scrollSpeed={15}
+                id="id"
+              >
+                <TransitionGroup component={null}>
+                  {params.images.map((v, i) => (
+                    <CSSTransition key={v.id || v.imgUrl} timeout={300} classNames="upload-item">
+                      <PubParmasTextuploadImage
+                        onEditClick={() => setEditImgIndex(i)}
+                        imageFile={v}
+                        onClick={() => {
+                          setPreviewData(v)
+                          setImagePreviewOpen(true)
+                        }}
+                        onClose={() => {
+                          updateImages((prevImages) => {
+                            const target = prevImages[i]
+                            if (target?.uploadTaskId)
+                              cancelUpload(target.uploadTaskId)
+                            return prevImages.filter((_, idx) => idx !== i)
+                          })
+                        }}
+                      />
+                    </CSSTransition>
+                  ))}
+                </TransitionGroup>
+              </ReactSortable>
+            )}
 
+            <TransitionGroup component={null}>
               {/* 视频列表 */}
               {(params.video ? [params.video] : []).map((v, i) => (
                 <CSSTransition key={`video-${i}`} timeout={300} classNames="upload-item">
@@ -319,14 +325,17 @@ const MobileContent = memo(
                     enableGlobalDrag={false}
                     onVideoUpdateFinish={(video) => {
                       updateVideo((prevVideo) => {
-                        if (prevVideo) {
-                          const prevIds = prevVideo.uploadTaskIds ?? {}
-                          const nextIds = video?.uploadTaskIds ?? {}
-                          if (prevIds.video && prevIds.video !== nextIds.video)
-                            cancelUpload(prevIds.video)
-                          if (prevIds.cover && prevIds.cover !== nextIds.cover)
-                            cancelUpload(prevIds.cover)
-                        }
+                        const prevIds = prevVideo?.uploadTaskIds ?? {}
+                        const nextIds = video.uploadTaskIds ?? {}
+
+                        // 删除或替换视频后，旧上传任务的异步结果不能重新显示旧缩略图。
+                        if (video.ossUrl && nextIds.video && prevIds.video !== nextIds.video)
+                          return prevVideo
+
+                        if (prevIds.video && prevIds.video !== nextIds.video)
+                          cancelUpload(prevIds.video)
+                        if (prevIds.cover && prevIds.cover !== nextIds.cover)
+                          cancelUpload(prevIds.cover)
                         return video
                       })
                     }}
@@ -349,7 +358,7 @@ const MobileContent = memo(
                 </CSSTransition>
               )}
             </TransitionGroup>
-          </ReactSortable>
+          </div>
 
           {/* 视频封面裁剪按钮 */}
           {params.video && (

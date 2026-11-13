@@ -184,49 +184,42 @@ export function useCreateMaterialForm({
 
   // 同步上传结果到 params
   useEffect(() => {
-    let hasChanges = false
-    let newImages = params.images
-    let newVideo = params.video
-
-    // 同步图片 ossUrl
-    if (params.images.length > 0) {
-      newImages = params.images.map((img) => {
+    // 上传状态变化可能与用户继续编辑或删除视频同时发生。只基于最新表单状态
+    // 补齐当前任务的 URL，避免旧 render 的快照把新视频覆盖掉。
+    setParams((prev) => {
+      let hasChanges = false
+      const images = prev.images.map((img) => {
         if (!img.ossUrl && img.uploadTaskId) {
           const task = tasks[img.uploadTaskId]
-          if (task?.md5 && md5Cache[task.md5]?.ossUrl) {
+          const ossUrl = task?.md5 ? md5Cache[task.md5]?.ossUrl : undefined
+          if (ossUrl) {
             hasChanges = true
-            return { ...img, ossUrl: md5Cache[task.md5].ossUrl }
+            return { ...img, ossUrl }
           }
         }
         return img
       })
-    }
 
-    // 同步视频 ossUrl
-    if (params.video) {
-      const video = params.video
-      if (!video.ossUrl && video.uploadTaskIds?.video) {
+      let video = prev.video
+      if (video?.uploadTaskIds?.video && !video.ossUrl) {
         const task = tasks[video.uploadTaskIds.video]
-        if (task?.md5 && md5Cache[task.md5]?.ossUrl) {
+        const ossUrl = task?.md5 ? md5Cache[task.md5]?.ossUrl : undefined
+        if (ossUrl) {
           hasChanges = true
-          newVideo = { ...video, ossUrl: md5Cache[task.md5].ossUrl }
+          video = { ...video, ossUrl }
         }
       }
-      if (newVideo && !newVideo.cover?.ossUrl && video.uploadTaskIds?.cover) {
+      if (video?.uploadTaskIds?.cover && !video.cover?.ossUrl) {
         const task = tasks[video.uploadTaskIds.cover]
-        if (task?.md5 && md5Cache[task.md5]?.ossUrl) {
+        const ossUrl = task?.md5 ? md5Cache[task.md5]?.ossUrl : undefined
+        if (ossUrl) {
           hasChanges = true
-          newVideo = {
-            ...newVideo,
-            cover: { ...newVideo.cover, ossUrl: md5Cache[task.md5].ossUrl },
-          }
+          video = { ...video, cover: { ...video.cover, ossUrl } }
         }
       }
-    }
 
-    if (hasChanges) {
-      setParams(prev => ({ ...prev, images: newImages, video: newVideo }))
-    }
+      return hasChanges ? { ...prev, images, video } : prev
+    })
   }, [tasks, md5Cache, params.images, params.video])
 
   // 检查是否有正在上传的任务

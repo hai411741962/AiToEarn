@@ -65,6 +65,8 @@ export interface IPubParmasTextareaProps {
   disableUploadCompatibilityCheck?: boolean
 }
 
+const EMPTY_IMAGE_FILES: IImgFile[] = []
+
 const PubParmasTextarea = memo(
   forwardRef(
     (
@@ -75,7 +77,7 @@ const PubParmasTextarea = memo(
         videoMax = 1,
         extend,
         centerExtend,
-        imageFileListValue = [],
+        imageFileListValue = EMPTY_IMAGE_FILES,
         videoFileValue,
         desValue = '',
         beforeExtend,
@@ -102,6 +104,11 @@ const PubParmasTextarea = memo(
       })
       // 记录最近一次从 props 同步过来的值，用于在 onChange effect 中判断是否为 props 触发的变化
       const lastSyncedFromProps = useRef({
+        des: desValue || '',
+        images: imageFileListValue ?? [],
+        video: videoFileValue,
+      })
+      const lastReceivedProps = useRef({
         des: desValue || '',
         images: imageFileListValue ?? [],
         video: videoFileValue,
@@ -140,16 +147,23 @@ const PubParmasTextarea = memo(
         if (onChange)
           onChange(values)
       }, [imageFileList, videoFile, value])
-      // 合并外部 props 同步，记录同步值用于 onChange effect 中判断
+      // 只同步实际改变的字段。上传回调可能先更新本地视频，再由父组件回传；
+      // 此时图片或文案 props 的更新不能把尚未回传的视频重置为旧值。
       useEffect(() => {
-        lastSyncedFromProps.current = {
+        const nextProps = {
           des: desValue || '',
           images: imageFileListValue ?? [],
           video: videoFileValue,
         }
-        setImageFileList(imageFileListValue ?? [])
-        setValue(desValue || '')
-        setVideoFile(videoFileValue)
+        const previousProps = lastReceivedProps.current
+        lastReceivedProps.current = nextProps
+        lastSyncedFromProps.current = nextProps
+        if (nextProps.images !== previousProps.images)
+          setImageFileList(nextProps.images)
+        if (nextProps.des !== previousProps.des)
+          setValue(nextProps.des)
+        if (nextProps.video !== previousProps.video)
+          setVideoFile(nextProps.video)
       }, [imageFileListValue, desValue, videoFileValue])
 
       const platConfig = usePlatformInfo(platType)
@@ -360,55 +374,61 @@ const PubParmasTextarea = memo(
               />
 
               {/* 上传列表 */}
-              <ReactSortable
+              <div
                 className={cn(
                   'grid gap-2.5',
                   isMobile
                     ? 'grid-cols-4'
                     : 'grid-cols-[repeat(auto-fill,112px)]',
                 )}
-                list={imageFileList}
-                animation={250}
                 data-testid="publish-media-list"
-                setList={(newList) => {
-                  if (isFirst.current.sort) {
-                    isFirst.current.sort = false
-                    return
-                  }
-                  setImageFileList(newList)
-                }}
-                scrollSensitivity={100}
-                scrollSpeed={15}
-                id="id"
               >
-                <TransitionGroup component={null}>
-                  {/* 图像列表 */}
-                  {imageFileList.map((v, i) => (
-                    <CSSTransition key={v.id || v.imgUrl} timeout={300} classNames="upload-item">
-                      <PubParmasTextuploadImage
-                        onEditClick={() => {
-                          setEditImgIndex(i)
-                        }}
-                        imageFile={v}
-                        onClick={() => {
-                          setPreviewData(v)
-                          setImagePreviewOpen(true)
-                        }}
-                        onClose={() => {
-                          const targetImage = imageFileList[i]
-                          if (targetImage?.uploadTaskId) {
-                            cancelUpload(targetImage.uploadTaskId)
-                          }
-                          setImageFileList((prevState) => {
-                            const newState = [...prevState]
-                            newState.splice(i, 1)
-                            return newState
-                          })
-                        }}
-                      />
-                    </CSSTransition>
-                  ))}
+                <ReactSortable
+                  className="contents"
+                  list={imageFileList}
+                  animation={250}
+                  setList={(newList) => {
+                    if (isFirst.current.sort) {
+                      isFirst.current.sort = false
+                      return
+                    }
+                    setImageFileList(newList)
+                  }}
+                  scrollSensitivity={100}
+                  scrollSpeed={15}
+                  id="id"
+                >
+                  <TransitionGroup component={null}>
+                    {/* 图像列表 */}
+                    {imageFileList.map((v, i) => (
+                      <CSSTransition key={v.id || v.imgUrl} timeout={300} classNames="upload-item">
+                        <PubParmasTextuploadImage
+                          onEditClick={() => {
+                            setEditImgIndex(i)
+                          }}
+                          imageFile={v}
+                          onClick={() => {
+                            setPreviewData(v)
+                            setImagePreviewOpen(true)
+                          }}
+                          onClose={() => {
+                            const targetImage = imageFileList[i]
+                            if (targetImage?.uploadTaskId) {
+                              cancelUpload(targetImage.uploadTaskId)
+                            }
+                            setImageFileList((prevState) => {
+                              const newState = [...prevState]
+                              newState.splice(i, 1)
+                              return newState
+                            })
+                          }}
+                        />
+                      </CSSTransition>
+                    ))}
+                  </TransitionGroup>
+                </ReactSortable>
 
+                <TransitionGroup component={null}>
                   {/* 视频列表 */}
                   {(videoFile ? [videoFile] : []).map((v, i) => {
                     return (
@@ -480,18 +500,17 @@ const PubParmasTextarea = memo(
                         enableGlobalDrag={true}
                         onVideoUpdateFinish={(video) => {
                           setVideoFile((prevState) => {
-                            if (prevState) {
-                              const prevIds = prevState.uploadTaskIds ?? {}
-                              const nextIds = video?.uploadTaskIds ?? {}
+                            const prevIds = prevState?.uploadTaskIds ?? {}
+                            const nextIds = video.uploadTaskIds ?? {}
 
-                              if (prevIds.video && prevIds.video !== nextIds.video) {
-                                cancelUpload(prevIds.video)
-                              }
+                            // 删除或替换视频后，旧上传任务的完成回调不能恢复旧缩略图。
+                            if (video.ossUrl && nextIds.video && prevIds.video !== nextIds.video)
+                              return prevState
 
-                              if (prevIds.cover && prevIds.cover !== nextIds.cover) {
-                                cancelUpload(prevIds.cover)
-                              }
-                            }
+                            if (prevIds.video && prevIds.video !== nextIds.video)
+                              cancelUpload(prevIds.video)
+                            if (prevIds.cover && prevIds.cover !== nextIds.cover)
+                              cancelUpload(prevIds.cover)
 
                             return video
                           })
@@ -518,7 +537,7 @@ const PubParmasTextarea = memo(
                     </CSSTransition>
                   )}
                 </TransitionGroup>
-              </ReactSortable>
+              </div>
 
               {/* 裁剪按钮 */}
               {videoFile && (
