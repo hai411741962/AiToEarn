@@ -1,6 +1,5 @@
 /**
- * BaijiahaoManualDialog - 百家号文章和视频的手动发布工作区。
- * 在未取得百家号接口发文权限时，保留稿件并引导用户到官方后台完成提交。
+ * ManualPublishDialog - 各平台文章和视频的手动发布工作区。
  */
 
 'use client'
@@ -31,16 +30,25 @@ function emptyDrafts(): ManualDrafts {
   }
 }
 
-const DRAFT_STORAGE_KEY = 'aitoearn:baijiahao-manual-draft'
-const BAIJIAHAO_URL = 'https://baijiahao.baidu.com/'
+export const MANUAL_CHANNELS = {
+  baijiahao: { url: 'https://baijiahao.baidu.com/' },
+  csdn: { url: 'https://mp.csdn.net/' },
+  zhihu: { url: 'https://www.zhihu.com/creator' },
+} as const
 
-interface BaijiahaoManualDialogProps {
+export type ManualChannel = keyof typeof MANUAL_CHANNELS
+
+interface ManualPublishDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
+  platform: ManualChannel
 }
 
-export function BaijiahaoManualDialog({ open, onOpenChange }: BaijiahaoManualDialogProps) {
+export function ManualPublishDialog({ open, onOpenChange, platform }: ManualPublishDialogProps) {
   const { t } = useTransClient('account')
+  const platformName = t(`channelManager.manualChannels.${platform}`)
+  const storageKey = `aitoearn:${platform}-manual-draft`
+  const common = (key: string) => t(`channelManager.manualPublish.${key}`, { platform: platformName })
   const [mode, setMode] = useState<ContentMode>('article')
   const [drafts, setDrafts] = useState<ManualDrafts>(emptyDrafts)
   const [files, setFiles] = useState<File[]>([])
@@ -56,7 +64,7 @@ export function BaijiahaoManualDialog({ open, onOpenChange }: BaijiahaoManualDia
 
   useEffect(() => {
     try {
-      const saved = window.localStorage.getItem(DRAFT_STORAGE_KEY)
+      const saved = window.localStorage.getItem(storageKey)
       if (saved) {
         const savedDraft: { mode?: ContentMode, drafts?: Partial<ManualDrafts> } = JSON.parse(saved)
         if (savedDraft.mode === 'article' || savedDraft.mode === 'video') {
@@ -80,31 +88,31 @@ export function BaijiahaoManualDialog({ open, onOpenChange }: BaijiahaoManualDia
       // 浏览器禁用本地存储时仍允许编辑当前稿件。
     }
     setReady(true)
-  }, [])
+  }, [storageKey])
 
   useEffect(() => {
     if (!ready) {
       return
     }
     try {
-      window.localStorage.setItem(DRAFT_STORAGE_KEY, JSON.stringify({ mode, drafts }))
+      window.localStorage.setItem(storageKey, JSON.stringify({ mode, drafts }))
     }
     catch {
       // 存储不可用时不影响复制与手动发布。
     }
-  }, [ready, mode, drafts])
+  }, [ready, mode, drafts, storageKey])
 
   const copyText = async (value: string) => {
     if (!value.trim()) {
-      toast.warning(t('channelManager.baijiahao.emptyContent'))
+      toast.warning(common('emptyContent'))
       return
     }
     try {
       await navigator.clipboard.writeText(value)
-      toast.success(t('channelManager.baijiahao.copied'))
+      toast.success(common('copied'))
     }
     catch {
-      toast.error(t('channelManager.baijiahao.copyFailed'))
+      toast.error(common('copyFailed'))
     }
   }
 
@@ -115,15 +123,15 @@ export function BaijiahaoManualDialog({ open, onOpenChange }: BaijiahaoManualDia
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="flex max-h-[calc(100dvh-24px)] flex-col overflow-hidden sm:max-h-[90vh] sm:w-[min(680px,95vw)]" data-testid="baijiahao-manual-dialog">
+      <DialogContent className="flex max-h-[calc(100dvh-24px)] flex-col overflow-hidden sm:max-h-[90vh] sm:w-[min(680px,95vw)]" data-testid={`${platform}-manual-dialog`}>
         <DialogHeader>
-          <DialogTitle>{t('channelManager.baijiahao.title')}</DialogTitle>
-          <DialogDescription>{t('channelManager.baijiahao.description')}</DialogDescription>
+          <DialogTitle>{common('title')}</DialogTitle>
+          <DialogDescription>{common('description')}</DialogDescription>
         </DialogHeader>
 
         <DialogBody className="space-y-4">
           <div className="rounded-lg border border-border bg-muted/40 p-3 text-sm text-muted-foreground">
-            {t('channelManager.baijiahao.manualNotice')}
+            {common('manualNotice')}
           </div>
 
           <Tabs
@@ -136,48 +144,48 @@ export function BaijiahaoManualDialog({ open, onOpenChange }: BaijiahaoManualDia
             <TabsList className="w-full">
               <TabsTrigger value="article" className="flex-1 cursor-pointer">
                 <FileImage className="mr-2 h-4 w-4" />
-                {t('channelManager.baijiahao.article')}
+                {common('article')}
               </TabsTrigger>
               <TabsTrigger value="video" className="flex-1 cursor-pointer">
                 <FileVideo2 className="mr-2 h-4 w-4" />
-                {t('channelManager.baijiahao.video')}
+                {common('video')}
               </TabsTrigger>
             </TabsList>
           </Tabs>
 
           <div className="space-y-2">
-            <label htmlFor="baijiahao-title" className="text-sm font-medium text-foreground">
-              {t('channelManager.baijiahao.titleLabel')}
+            <label htmlFor={`${platform}-title`} className="text-sm font-medium text-foreground">
+              {common('titleLabel')}
             </label>
             <Input
-              id="baijiahao-title"
+              id={`${platform}-title`}
               value={title}
               onChange={event => updateDraft('title', event.target.value)}
-              placeholder={t('channelManager.baijiahao.titlePlaceholder')}
+              placeholder={common('titlePlaceholder')}
               maxLength={100}
             />
           </div>
 
           <div className="space-y-2">
-            <label htmlFor="baijiahao-body" className="text-sm font-medium text-foreground">
-              {t(mode === 'article' ? 'channelManager.baijiahao.bodyLabel' : 'channelManager.baijiahao.videoDescriptionLabel')}
+            <label htmlFor={`${platform}-body`} className="text-sm font-medium text-foreground">
+              {common(mode === 'article' ? 'bodyLabel' : 'videoDescriptionLabel')}
             </label>
             <Textarea
-              id="baijiahao-body"
+              id={`${platform}-body`}
               value={body}
               onChange={event => updateDraft('body', event.target.value)}
-              placeholder={t('channelManager.baijiahao.bodyPlaceholder')}
+              placeholder={common('bodyPlaceholder')}
               className="min-h-36 resize-y"
             />
           </div>
 
           <div className="space-y-2">
-            <label htmlFor="baijiahao-media" className="text-sm font-medium text-foreground">
-              {t(mode === 'article' ? 'channelManager.baijiahao.images' : 'channelManager.baijiahao.videoFile')}
+            <label htmlFor={`${platform}-media`} className="text-sm font-medium text-foreground">
+              {common(mode === 'article' ? 'images' : 'videoFile')}
             </label>
             <Input
               key={mode}
-              id="baijiahao-media"
+              id={`${platform}-media`}
               type="file"
               accept={mode === 'article' ? 'image/*' : 'video/*'}
               multiple={mode === 'article'}
@@ -185,7 +193,7 @@ export function BaijiahaoManualDialog({ open, onOpenChange }: BaijiahaoManualDia
               className="cursor-pointer file:cursor-pointer"
             />
             <p className="text-xs text-muted-foreground">
-              {t('channelManager.baijiahao.mediaNotice')}
+              {common('mediaNotice')}
             </p>
             {files.length > 0 && (
               <ul className="list-inside list-disc text-xs text-muted-foreground">
@@ -195,27 +203,27 @@ export function BaijiahaoManualDialog({ open, onOpenChange }: BaijiahaoManualDia
           </div>
 
           <p className="text-sm text-muted-foreground">
-            {t('channelManager.baijiahao.steps')}
+            {common('steps')}
           </p>
         </DialogBody>
 
         <DialogFooter className="flex-wrap sm:justify-between">
           <Button variant="ghost" className="cursor-pointer" onClick={clearDraft}>
             <Trash2 className="mr-2 h-4 w-4" />
-            {t('channelManager.baijiahao.clear')}
+            {common('clear')}
           </Button>
           <div className="flex flex-wrap gap-2">
             <Button variant="outline" className="cursor-pointer" onClick={() => void copyText(title)}>
               <Copy className="mr-2 h-4 w-4" />
-              {t('channelManager.baijiahao.copyTitle')}
+              {common('copyTitle')}
             </Button>
             <Button variant="outline" className="cursor-pointer" onClick={() => void copyText(body)}>
               <Copy className="mr-2 h-4 w-4" />
-              {t('channelManager.baijiahao.copyBody')}
+              {common('copyBody')}
             </Button>
-            <Button className="cursor-pointer" onClick={() => window.open(BAIJIAHAO_URL, '_blank', 'noopener,noreferrer')}>
+            <Button className="cursor-pointer" onClick={() => window.open(MANUAL_CHANNELS[platform].url, '_blank', 'noopener,noreferrer')}>
               <ExternalLink className="mr-2 h-4 w-4" />
-              {t('channelManager.baijiahao.openOfficial')}
+              {common('openOfficial')}
             </Button>
           </div>
         </DialogFooter>
