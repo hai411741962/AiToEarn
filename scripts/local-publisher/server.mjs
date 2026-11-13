@@ -74,10 +74,10 @@ async function withAccountBrowser(accountId, headed, action) {
 }
 
 async function getCsdnIdentity(page) {
-  await page.goto('https://mp.csdn.net/console/article', { waitUntil: 'domcontentloaded', timeout: 60000 })
-  if (/passport\.csdn\.net\/login/.test(page.url())) return null
+  await page.goto('https://mp.csdn.net/', { waitUntil: 'domcontentloaded', timeout: 60000 })
+  if (!page.url().startsWith('https://mp.csdn.net/')) return null
   const body = await page.locator('body').innerText().catch(() => '')
-  if (/登录后|请先登录|立即登录/.test(body) && !/文章管理|创作中心/.test(body)) return null
+  if (/登录后|请先登录|立即登录/.test(body)) return null
   const cookies = await page.context().cookies('https://www.csdn.net')
   return cookies.find(cookie => cookie.name === 'UserName')?.value || null
 }
