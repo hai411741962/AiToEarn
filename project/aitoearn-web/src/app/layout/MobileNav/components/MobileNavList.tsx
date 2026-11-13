@@ -12,7 +12,6 @@ import { useGitHubStars } from '@/app/layout/shared/hooks/useGitHubStars'
 import { useVisibleRouterData } from '@/app/layout/shared/hooks/useVisibleRouterData'
 import { useSystemStore } from '@/store/system'
 import { cn } from '@/utils/className'
-import { MobileMyChannelsButton } from './MobileMyChannelsButton'
 import { MobileNavItem } from './MobileNavItem'
 
 function isRouteActive(item: IRouterDataItem, currentRoute: string): boolean {
@@ -40,7 +39,7 @@ export function MobileNavList({ currentRoute, onClose, onOpenMyChannels }: Mobil
     'text-muted-foreground hover:bg-brand-cyan/10 hover:text-brand-cyan',
   )
 
-  const renderRouteItem = (item: IRouterDataItem, level = 0): React.ReactNode => {
+  const renderRouteItem = (item: IRouterDataItem, level = 0, stepNumber?: number): React.ReactNode => {
     const isActive = isRouteActive(item, currentRoute)
 
     return (
@@ -51,6 +50,7 @@ export function MobileNavList({ currentRoute, onClose, onOpenMyChannels }: Mobil
             translationKey={item.translationKey}
             icon={level === 0 ? item.icon : undefined}
             isActive={isActive}
+            stepNumber={stepNumber}
             onClose={onClose}
             className={cn(level > 0 && 'ml-6 py-2.5 text-sm')}
           />
@@ -87,10 +87,7 @@ export function MobileNavList({ currentRoute, onClose, onOpenMyChannels }: Mobil
       {/* 路由导航项 - 折叠/展开 */}
       {mobileNavExpanded && (
         <div className="flex flex-col gap-1" data-testid="mobile-nav-routes">
-          {visibleRoutes.map((item: IRouterDataItem) => renderRouteItem(item))}
-
-          {/* 我的频道 */}
-          <MobileMyChannelsButton onClose={onClose} onOpenMyChannels={onOpenMyChannels} />
+          {visibleRoutes.map((item: IRouterDataItem, index: number) => renderRouteItem(item, 0, index))}
 
         </div>
       )}

@@ -1,8 +1,9 @@
 import type { Metadata } from 'next'
 import { getHreflang, languages } from '@/app/i18n/languageConfig'
+import brandLogo from '@/assets/images/onegaotong-logo.png'
 import { getPageTitle } from './title'
 
-const BRAND_KEYWORDS = ['AiToEarn', 'aitoearn', 'Ai To Earn', 'ai to earn', 'AITOEARN', 'earn']
+const BRAND_KEYWORDS = ['一稿通', 'AiToEarn', 'aitoearn', 'Ai To Earn', 'ai to earn', 'AITOEARN', 'earn']
 
 /** 确保品牌关键词变体在 keywords 最前面，避免重复 */
 function prependBrandKeyword(keywords: Metadata['keywords']): string {
@@ -42,6 +43,7 @@ export async function getMetadata(props: Metadata, lng: string, path?: string): 
     title,
     description,
     keywords: prependBrandKeyword(props.keywords),
+    icons: { icon: brandLogo.src },
     referrer: 'no-referrer',
     alternates: {
       canonical: `${baseUrl}/${lng}${pagePath}`,
@@ -52,7 +54,7 @@ export async function getMetadata(props: Metadata, lng: string, path?: string): 
       title,
       description,
       url: `${baseUrl}/${lng}${pagePath}`,
-      siteName: 'AiToEarn',
+      siteName: '一稿通',
       locale: lng,
       type: 'website',
       images: [

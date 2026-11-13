@@ -12,11 +12,11 @@ import { visibleRouterData } from '@/app/layout/routerData'
 import { cn } from '@/utils/className'
 
 const bottomNavItems = [
-  { routerKey: 'header.draftBox', labelKey: 'header.draftBox', testId: 'content' },
-  { routerKey: 'aiSocial', labelKey: 'aiSocial', testId: 'publish' },
-  { routerKey: 'tasksHistory', labelKey: 'tasksHistory', testId: 'history' },
-  { routerKey: 'accounts', labelKey: 'accounts', testId: 'accounts' },
-  { routerKey: 'header.agentAssets', labelKey: 'header.agentAssets', testId: 'agent-assets' },
+  { routerKey: 'workspace', labelKey: 'workspace', testId: 'workspace' },
+  { routerKey: 'channels', labelKey: 'channels', testId: 'channels' },
+  { routerKey: 'content', labelKey: 'content', testId: 'content' },
+  { routerKey: 'schedule', labelKey: 'schedule', testId: 'schedule' },
+  { routerKey: 'results', labelKey: 'results', testId: 'results' },
 ] as const
 
 const navLabelBaseClassName

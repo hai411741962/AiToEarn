@@ -15,7 +15,7 @@
     "error": "错误"
   },
   "error": {
-    "pluginNotInstalled": "请先安装 Aitoearn 浏览器插件",
+    "pluginNotInstalled": "请先安装一稿通配套浏览器插件",
     "publishingInProgress": "当前正在发布中，请稍后再试",
     "loginFailed": "登录失败",
     "publishFailed": "发布失败"
@@ -105,7 +105,7 @@
     "pluginActive": "插件已激活",
     "pluginInactive": "插件未激活",
     "downloadPlugin": "下载插件",
-    "downloadDescription": "AiToEarn 浏览器插件专门用于小红书的智能操作。请点击下方按钮下载安装。",
+    "downloadDescription": "一稿通配套浏览器插件用于小红书的智能操作。请点击下方按钮下载安装。",
     "downloadButton": "立即下载",
     "chromeWebStore": "Chrome 商店安装（版本较旧）",
     "chinaDownload": "中国地区下载",
@@ -126,7 +126,7 @@
     "permissionRequired": "需要授权",
     "permissionDescription": "插件已安装，但需要授予必需的权限才能正常使用。请在浏览器扩展设置中授权插件所需权限。",
     "siteAccessRequiredTitle": "需要授予站点访问权限",
-    "siteAccessRequiredDescription": "当前未授予站点访问权限，插件无法在 AiToEarn 页面正常使用。你可以通过以下方式处理：",
+    "siteAccessRequiredDescription": "当前未授予站点访问权限，插件无法在一稿通页面正常使用。你可以通过以下方式处理：",
     "siteAccessStepReauthorize": "重新授权插件。",
     "siteAccessStepExtensionSettings": "进入浏览器管理扩展，找到 “AiToEarn Extension”，点击 “详细信息”，在 “站点访问权限” 中选择 “在所有站点上”。",
     "checkPermission": "重新检查权限",
@@ -147,7 +147,7 @@
     "title": "仅支持桌面端",
     "description": "浏览器插件无法在移动设备上使用，请前往电脑端浏览器安装和使用插件。",
     "goToPC": "请在电脑端访问",
-    "introduction": "AiToEarn平台浏览器插件，配合AiToEarn网页端使用，可自动化小红书，tiktok等平台互动，实现关注，点赞，收藏，评论等。"
+    "introduction": "一稿通配套浏览器插件可辅助完成小红书、TikTok 等平台的互动操作，包括关注、点赞、收藏和评论。"
   },
   "version": {
     "title": "插件版本",

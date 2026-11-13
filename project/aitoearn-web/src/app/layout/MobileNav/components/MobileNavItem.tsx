@@ -14,6 +14,7 @@ export function MobileNavItem({
   translationKey,
   icon,
   isActive,
+  stepNumber,
   onClose,
   className,
 }: MobileNavItemProps) {
@@ -36,6 +37,11 @@ export function MobileNavItem({
       <span className={cn('flex items-center justify-center', isActive && 'text-brand-cyan')}>
         {icon || <FileText size={20} />}
       </span>
+      {stepNumber !== undefined && (
+        <span className="shrink-0 tabular-nums text-xs text-muted-foreground" aria-hidden="true">
+          {String(stepNumber).padStart(2, '0')}
+        </span>
+      )}
       <span>{t(translationKey)}</span>
     </Link>
   )

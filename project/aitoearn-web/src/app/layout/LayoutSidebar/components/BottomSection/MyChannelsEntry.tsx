@@ -28,19 +28,22 @@ export function MyChannelsEntry({ collapsed }: SidebarCommonProps) {
             onClick={handleClick}
             data-testid="sidebar-my-channels"
             className={cn(
-              'flex flex-1 cursor-pointer items-center rounded-lg text-muted-foreground transition-colors hover:bg-brand-cyan/10 hover:text-brand-cyan',
-              collapsed ? 'h-9 w-9 justify-center' : 'justify-between px-3 py-2',
+              'flex w-full cursor-pointer items-center rounded-xl text-muted-foreground transition-colors hover:bg-brand-cyan/10 hover:text-brand-cyan',
+              collapsed ? 'justify-center px-2 py-2.5' : 'gap-3 px-3 py-2.5',
             )}
           >
-            <div className="flex items-center gap-2">
-              <Tv size={18} className="text-brand-cyan" />
-              {!collapsed && <span className="text-sm">{t('channelManager.myChannels')}</span>}
-            </div>
+            <Tv size={20} className="shrink-0 text-brand-cyan" />
+            {!collapsed && (
+              <>
+                <span className="shrink-0 tabular-nums text-xs" aria-hidden="true">01</span>
+                <span className="truncate text-sm font-medium">{t('channelManager.myChannels')}</span>
+              </>
+            )}
           </button>
         </TooltipTrigger>
         {collapsed && (
           <TooltipContent side="right">
-            <p>{t('channelManager.myChannels')}</p>
+            <p>{`01 · ${t('channelManager.myChannels')}`}</p>
           </TooltipContent>
         )}
       </Tooltip>

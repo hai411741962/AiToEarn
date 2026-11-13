@@ -17,6 +17,7 @@ interface NavItemProps extends SidebarCommonProps {
   item: NavItemData
   currentRoute: string
   level?: number
+  stepNumber?: number
 }
 
 interface NavItemActiveState {
@@ -44,7 +45,7 @@ function getItemActiveState(item: NavItemData, currentRoute: string): NavItemAct
   }
 }
 
-function NavItem({ item, currentRoute, collapsed, level = 0 }: NavItemProps) {
+function NavItem({ item, currentRoute, collapsed, level = 0, stepNumber }: NavItemProps) {
   const { t } = useTransClient('route')
   const lng = useGetClientLng()
   const { isActive, isDescendantActive, isSelfActive } = getItemActiveState(item, currentRoute)
@@ -91,9 +92,16 @@ function NavItem({ item, currentRoute, collapsed, level = 0 }: NavItemProps) {
         )}
       </span>
       {!collapsed && (
-        <span className="overflow-hidden text-ellipsis whitespace-nowrap">
-          {t(item.translationKey)}
-        </span>
+        <>
+          {stepNumber !== undefined && (
+            <span className="shrink-0 tabular-nums text-xs text-muted-foreground" aria-hidden="true">
+              {String(stepNumber).padStart(2, '0')}
+            </span>
+          )}
+          <span className="overflow-hidden text-ellipsis whitespace-nowrap">
+            {t(item.translationKey)}
+          </span>
+        </>
       )}
     </div>
   )
@@ -111,7 +119,7 @@ function NavItem({ item, currentRoute, collapsed, level = 0 }: NavItemProps) {
       <Tooltip>
         <TooltipTrigger asChild>{content}</TooltipTrigger>
         <TooltipContent side="right">
-          <p>{t(item.translationKey)}</p>
+          <p>{`${stepNumber !== undefined ? `${String(stepNumber).padStart(2, '0')} · ` : ''}${t(item.translationKey)}`}</p>
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>
@@ -142,22 +150,15 @@ function NavItem({ item, currentRoute, collapsed, level = 0 }: NavItemProps) {
 }
 
 export function NavSection({ items, currentRoute, collapsed }: NavSectionProps) {
-  // 旧 "More" 分组内的项改为直接展示在主菜单底部
-  const trailingKeys = ['tasksHistory', 'header.materialLibrary']
-  const mainItems = items.filter(item => !trailingKeys.includes(item.translationKey))
-  const trailingItems = trailingKeys
-    .map(key => items.find(i => i.translationKey === key))
-    .filter((i): i is NavItemData => i !== undefined)
-  const navItems = [...mainItems, ...trailingItems]
-
   return (
     <nav className="flex flex-col gap-1 pr-1" data-testid="sidebar-nav">
-      {navItems.map(item => (
+      {items.map((item, index) => (
         <NavItem
           key={item.path || item.translationKey}
           item={item}
           currentRoute={currentRoute}
           collapsed={collapsed}
+          stepNumber={index}
         />
       ))}
     </nav>

@@ -27,6 +27,7 @@ export function MobileMyChannelsButton({
       <span className="flex items-center justify-center text-brand-cyan">
         <Tv size={20} />
       </span>
+      <span className="shrink-0 tabular-nums text-xs text-muted-foreground" aria-hidden="true">01</span>
       <span>{t('channelManager.myChannels')}</span>
     </button>
   )

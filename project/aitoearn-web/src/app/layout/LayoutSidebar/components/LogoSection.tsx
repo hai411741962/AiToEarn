@@ -9,7 +9,7 @@ import { PanelLeftClose, PanelLeftOpen } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { BRAND_TITLE, BrandWordmark } from '@/app/layout/shared'
-import logo from '@/assets/images/logo.png'
+import logo from '@/assets/images/onegaotong-logo.png'
 import { cn } from '@/utils/className'
 
 export function LogoSection({ collapsed, onToggle }: LogoSectionProps) {

@@ -3,5 +3,5 @@
  */
 
 export async function getPageTitle(name: string, _lng: string) {
-  return `AiToEarn - ${name}`
+  return `一稿通 - ${name}`
 }

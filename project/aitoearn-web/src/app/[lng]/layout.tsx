@@ -7,6 +7,7 @@ import { fallbackLng, languages } from '@/app/i18n/settings'
 import LayoutSidebar from '@/app/layout/LayoutSidebar'
 import { MainContent } from '@/app/layout/MainContent'
 import MobileNav from '@/app/layout/MobileNav'
+import brandLogo from '@/assets/images/onegaotong-logo.png'
 import { ChannelManager } from '@/components/ChannelManager'
 import { Providers } from '../layout/Providers'
 import '../globals.css'
@@ -39,7 +40,8 @@ export async function generateMetadata({ params }: { params: Promise<{ lng: stri
   return {
     title: t('title'),
     description: t('content'),
-    keywords: `aitoearn, AiToEarn, ai, earn, ${new URL(baseUrl).hostname}`,
+    keywords: `一稿通, aitoearn, AiToEarn, ai, content publishing, ${new URL(baseUrl).hostname}`,
+    icons: { icon: brandLogo.src },
     alternates: {
       languages: Object.fromEntries(alternateRefs.map(({ href, hreflang }) => [hreflang, href])),
     },
