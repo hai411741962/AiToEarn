@@ -126,6 +126,7 @@ export function CsdnAutoPublishPanel({ title, body }: { title: string, body: str
     try {
       const response = await request<{ results: PublishResult[] }>('/publish', 'POST', { accountIds: selected, title, body })
       setResults(response.results)
+      setSelected(previous => previous.filter(id => response.results.find(result => result.accountId === id)?.status === 'failed'))
     }
     catch (error) { setMessage(String(error)) }
     finally { setBusy(false) }
