@@ -135,13 +135,13 @@ const PubParmasTextareaUpload = memo(
           catch (error) {
             if (!isAbortError(error)) {
               console.error(error)
-              toast.error('上传失败，请稀后重试')
+              toast.error(t('upload.failed'))
               videoHandle.cancel()
               coverHandle.cancel()
             }
           }
         },
-        [enqueueUpload, isAbortError, onVideoUpdateFinish],
+        [enqueueUpload, isAbortError, onVideoUpdateFinish, t],
       )
 
       // 上传图片
@@ -194,14 +194,33 @@ const PubParmasTextareaUpload = memo(
               .catch((error) => {
                 if (!isAbortError(error)) {
                   console.error(error)
-                  toast.error('上传失败，请稍后重试')
+                  toast.error(t('upload.failed'))
                   cancel()
                 }
               })
           })
         },
-        [enqueueUpload, isAbortError, onImgUpdateFinish],
+        [enqueueUpload, isAbortError, onImgUpdateFinish, t],
       )
+
+      const processFiles = useCallback(async (files: File[]) => {
+        let processingVideo = true
+        try {
+          for (const file of files.filter(item => item.type.startsWith('video/'))) {
+            const video = await formatVideo(file)
+            await uploadVideo(video)
+          }
+
+          processingVideo = false
+          const imageFiles = files.filter(file => file.type.startsWith('image/'))
+          if (imageFiles.length > 0)
+            await uploadImg(imageFiles)
+        }
+        catch (error) {
+          console.error('Failed to prepare media for upload:', error)
+          toast.error(t(processingVideo ? 'videoCover.grabFrameFailed' : 'upload.failed'))
+        }
+      }, [t, uploadImg, uploadVideo])
 
       // 全局拖拽事件处理
       useEffect(() => {
@@ -252,18 +271,7 @@ const PubParmasTextareaUpload = memo(
             return
           }
 
-          // 处理视频
-          const videoFiles = files.filter(file => file.type.startsWith('video/'))
-          for (const file of videoFiles) {
-            const video = await formatVideo(file)
-            await uploadVideo(video)
-          }
-
-          // 处理图片
-          const imageFiles = files.filter(file => file.type.startsWith('image/'))
-          if (imageFiles.length > 0) {
-            await uploadImg(imageFiles)
-          }
+          await processFiles(files)
         }
 
         document.addEventListener('dragenter', handleGlobalDragEnter)
@@ -277,7 +285,7 @@ const PubParmasTextareaUpload = memo(
           document.removeEventListener('dragover', handleGlobalDragOver)
           document.removeEventListener('drop', handleGlobalDrop)
         }
-      }, [enableGlobalDrag, checkFileListType, uploadVideo, uploadImg])
+      }, [enableGlobalDrag, checkFileListType, processFiles])
 
       // 处理文件选择
       const handleFileChange = useCallback(
@@ -297,25 +305,14 @@ const PubParmasTextareaUpload = memo(
             return
           }
 
-          // 处理视频
-          const videoFiles = fileList.filter(file => file.type.startsWith('video/'))
-          for (const file of videoFiles) {
-            const video = await formatVideo(file)
-            await uploadVideo(video)
-          }
-
-          // 处理图片
-          const imageFiles = fileList.filter(file => file.type.startsWith('image/'))
-          if (imageFiles.length > 0) {
-            await uploadImg(imageFiles)
-          }
+          await processFiles(fileList)
 
           // 清空 input 以便下次选择同一文件
           if (fileInputRef.current) {
             fileInputRef.current.value = ''
           }
         },
-        [checkFileListType, uploadVideo, uploadImg],
+        [checkFileListType, processFiles],
       )
 
       // 触发文件选择
@@ -369,20 +366,9 @@ const PubParmasTextareaUpload = memo(
             return
           }
 
-          // 处理视频
-          const videoFiles = files.filter(file => file.type.startsWith('video/'))
-          for (const file of videoFiles) {
-            const video = await formatVideo(file)
-            await uploadVideo(video)
-          }
-
-          // 处理图片
-          const imageFiles = files.filter(file => file.type.startsWith('image/'))
-          if (imageFiles.length > 0) {
-            await uploadImg(imageFiles)
-          }
+          await processFiles(files)
         },
-        [checkFileListType, uploadVideo, uploadImg],
+        [checkFileListType, processFiles],
       )
 
       // 处理图片素材导入

@@ -112,14 +112,20 @@ export function hasInvalidDescTopicFormat(value: string) {
 
 export async function formatVideo(file: File): Promise<IVideoFile> {
   const videoUrl = URL.createObjectURL(file)
-  const videoInfo = await VideoGrabFrame(videoUrl, 0)
+  try {
+    const videoInfo = await VideoGrabFrame(videoUrl, 0)
 
-  return {
-    filename: file.name,
-    videoUrl,
-    size: file.size!,
-    file,
-    ...videoInfo,
+    return {
+      filename: file.name,
+      videoUrl,
+      size: file.size,
+      file,
+      ...videoInfo,
+    }
+  }
+  catch (error) {
+    URL.revokeObjectURL(videoUrl)
+    throw error
   }
 }
 

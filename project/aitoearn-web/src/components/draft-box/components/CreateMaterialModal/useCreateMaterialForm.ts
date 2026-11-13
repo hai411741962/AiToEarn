@@ -15,7 +15,8 @@ import { PubType } from '@/app/config/publishConfig'
 import { UploadTaskStatusEnum } from '@/components/PublishDialog/compoents/PublishManageUpload/publishManageUpload.enum'
 import { usePublishManageUpload } from '@/components/PublishDialog/compoents/PublishManageUpload/usePublishManageUpload'
 import { isPublishTitleSupported } from '@/components/PublishDialog/PublishDialog.util'
-import { useTaskPlatforms } from '@/hooks/usePlatformMetadata'
+import { usePlatformMetadata } from '@/hooks/usePlatformMetadata'
+import { getTaskPlatformInfos } from '@/store/platformMetadata/utils'
 import { toast } from '@/utils/ui/toast'
 import { UNLIMITED_PLATFORM_MAX_USE_COUNT } from '../../utils/materialUseCount'
 import { getMaterialValidationIssues } from './useMaterialValidation'
@@ -49,7 +50,7 @@ export function useCreateMaterialForm({
   const { t } = useTranslation('brandPromotion')
   const [submitting, setSubmitting] = useState(false)
   const [validationIssues, setValidationIssues] = useState<MaterialValidationIssue[]>([])
-  const taskPlatforms = useTaskPlatforms()
+  const { list: platformList } = usePlatformMetadata()
 
   // 获取上传任务状态
   const { tasks, md5Cache, cancelUpload } = usePublishManageUpload(
@@ -61,8 +62,12 @@ export function useCreateMaterialForm({
   )
 
   // 默认全选平台
-  const defaultPlatforms = useMemo(() => contentFirst ? [] : taskPlatforms.map(([p]) => p), [contentFirst, taskPlatforms])
+  const defaultPlatforms = useMemo(
+    () => contentFirst ? [] : getTaskPlatformInfos(platformList).map(platform => platform.type),
+    [contentFirst, platformList],
+  )
   const defaultPlatformsAppliedRef = useRef(false)
+  const initializedMaterialIdRef = useRef<string | null | undefined>(undefined)
 
   // 表单参数
   const [params, setParams] = useState<FormParams>({
@@ -89,6 +94,11 @@ export function useCreateMaterialForm({
 
   // 初始化 - 如果是编辑模式，填充已有数据
   useEffect(() => {
+    const materialId = editingMaterial?.id ?? null
+    if (initializedMaterialIdRef.current === materialId)
+      return
+    initializedMaterialIdRef.current = materialId
+
     if (editingMaterial) {
       const images: IImgFile[]
         = editingMaterial.mediaList
