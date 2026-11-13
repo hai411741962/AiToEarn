@@ -14,7 +14,6 @@ import { useUserStore } from '@/store/user'
 import { cn } from '@/utils/className'
 import { BottomSection, LogoSection, NavSection, UserDropdownMenu } from './components'
 import { ConfigManagerEntry } from './components/BottomSection/ConfigManagerEntry'
-import { MyChannelsEntry } from './components/BottomSection/MyChannelsEntry'
 
 /**
  * 侧边栏主组件
@@ -68,11 +67,6 @@ function LayoutSidebar() {
         {/* 配置管理入口 */}
         <div className="pb-1 flex flex-1">
           <ConfigManagerEntry collapsed={collapsed} />
-        </div>
-
-        {/* 我的频道入口 */}
-        <div className="pb-1 flex flex-1">
-          <MyChannelsEntry collapsed={collapsed} />
         </div>
 
         {/* 底部功能区 */}

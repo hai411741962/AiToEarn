@@ -8,7 +8,7 @@ import QRCode from 'qrcode'
 import React from 'react'
 import { createRoot } from 'react-dom/client'
 import { setDisableLanguageSwitch } from '@/app/i18n/client'
-import logo from '@/assets/images/logo.png'
+import logo from '@/assets/images/onegaotong-logo.png'
 import ChatMessage from '@/components/Chat/ChatMessage'
 import { getOssUrl } from '@/utils/oss'
 

@@ -4,7 +4,7 @@
 
 import { cn } from '@/utils/className'
 
-export const BRAND_TITLE = 'AitoEarn'
+export const BRAND_TITLE = '一稿通'
 
 type BrandWordmarkTag = 'h1' | 'span'
 type BrandWordmarkSize = 'sidebar' | 'mobile'
@@ -47,16 +47,14 @@ export function BrandWordmark({
           ANCHOR_SIZE_CLASSNAME[size],
         )}
       >
-        A
+        一
       </span>
-      <span className="text-foreground/90">ito</span>
       <span
         className={cn(
           'inline-flex items-baseline bg-gradient-back bg-clip-text text-transparent transition-transform duration-300 group-hover/logo:translate-x-px',
         )}
       >
-        <span className={cn('inline-block font-bold', ANCHOR_SIZE_CLASSNAME[size])}>E</span>
-        <span>arn</span>
+        <span className={cn('inline-block font-bold', ANCHOR_SIZE_CLASSNAME[size])}>稿通</span>
       </span>
     </Component>
   )

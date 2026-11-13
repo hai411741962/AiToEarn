@@ -23,6 +23,7 @@ export interface MobileNavItemProps extends MobileCloseProps {
   translationKey: string
   icon?: React.ReactNode
   isActive: boolean
+  stepNumber?: number
   className?: string
 }
 

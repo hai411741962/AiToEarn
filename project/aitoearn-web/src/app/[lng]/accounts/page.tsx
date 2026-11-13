@@ -22,6 +22,7 @@ interface AccountsPageProps {
   searchParams: {
     platform?: string
     spaceId?: string
+    action?: string
   }
 }
 

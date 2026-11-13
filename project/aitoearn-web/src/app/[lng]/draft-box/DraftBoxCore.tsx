@@ -17,6 +17,7 @@ import { Button } from '@/components/ui/button'
 import { useBrandPromotionStore } from '@/store/draft-box/brandPromotionStore'
 import { usePlanDetailStore } from '@/store/draft-box/planDetailStore'
 import { usePlanTabStore } from '@/store/draft-box/planTabStore'
+import { ContentStartBar } from './components/ContentStartBar'
 
 export default function DraftBoxCore() {
   const { t } = useTransClient('brandPromotion')
@@ -160,6 +161,7 @@ export default function DraftBoxCore() {
   if (showEmpty) {
     return (
       <div className="flex flex-col h-full">
+        <ContentStartBar />
         <div className="flex-1 min-h-0">
           <div className="flex flex-col h-full bg-background">
             <div className="flex-1 flex items-center justify-center p-4">
@@ -192,6 +194,7 @@ export default function DraftBoxCore() {
 
   return (
     <div className="flex flex-col h-full">
+      <ContentStartBar />
       {/* Tab 栏 */}
       <div data-testid="draftbox-plan-tabs">
         <PlanTabBar onPlanChange={handlePlanChange} />

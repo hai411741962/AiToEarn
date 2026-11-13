@@ -1,14 +1,14 @@
 {
   "dropToUpload": "松手上传文件",
   "announcement": {
-    "text": "AiToEarn 使用 Agent 来完成你所有的内容需求，期间会调用大量工具，执行时间会稍久，您可以随时退出，稍后再来查看任务的完成情况。"
+    "text": "一稿通使用 AI Agent 完成内容创作任务，执行时间可能稍长。您可以随时离开，稍后回来查看结果。"
   },
   "releaseBanner": {
     "tag": "Release v0.8.0",
     "text": "通过插件和繁荣的市场构建和扩展AI工作流程。"
   },
   "header": {
-    "logo": "Aitoearn",
+    "logo": "一稿通",
     "nav": {
       "home": "首页",
       "marketplace": "市场",
@@ -27,14 +27,14 @@
     "starsText": "stars on",
     "github": "GitHub",
     "title": "成为最好用的内容营销\nAI Agent",
-    "subtitle": "从今天起，使用AI轻松管理你的社交媒体。AITOEARN提供从灵感创意、内容制作，内容分发内容互动管理等一站式能力，让AI触手可及。",
+    "subtitle": "从灵感、制作到多平台发布，用一稿通轻松管理社交媒体内容。",
     "getStarted": "立即开始",
     "useMobilePhone": "使用移动设备"
   },
   "seo": {
     "title": "AI视频与内容创作 - 一键发布15+社交平台",
-    "description": "AiToEarn是你的AI社交媒体运营员工。一句话AI生成视频、图片和文案，一键发布到抖音、小红书、B站、快手、TikTok、YouTube等15+主流平台。提供AI内容创作、智能剪辑、视频转绘、视频翻译、热点发现、品牌监控、统一互动管理等全链路功能，助力创作者和企业实现AI驱动的内容增长与变现。",
-    "keywords": "AI内容营销, AI社交媒体管理, AI视频生成, 多平台发布, AI创作, 自媒体运营, 抖音运营, 小红书运营, AI Agent, 内容分发, AI文案生成, 智能剪辑, 视频转绘, 品牌监控, AiToEarn"
+    "description": "一稿通是你的 AI 内容运营工作台。从生成视频、图片和文案，到发布到抖音、小红书、B站、快手、TikTok、YouTube 等主流平台，一站完成内容创作、分发与互动管理。",
+    "keywords": "一稿通, AI内容营销, AI社交媒体管理, AI视频生成, 多平台发布, AI创作, 自媒体运营, 抖音运营, 小红书运营, AI Agent, 内容分发, AI文案生成, 智能剪辑, 视频转绘, 品牌监控"
   },
   "agentGenerator": {
     "title": "有什么可以帮你的？",

@@ -4,11 +4,11 @@
  */
 
 import {
-  Bot,
+  CalendarDays,
+  FileText,
   History,
-  Home,
-  Sparkles,
-  Upload,
+  LayoutDashboard,
+  Tv,
 } from 'lucide-react'
 
 export interface IRouterDataItem {
@@ -26,34 +26,34 @@ export interface IRouterDataItem {
 
 export const routerData: IRouterDataItem[] = [
   {
-    name: 'Content Management',
-    translationKey: 'header.draftBox',
+    name: 'Workspace',
+    translationKey: 'workspace',
     path: '/',
-    icon: <Home size={20} />,
+    icon: <LayoutDashboard size={20} />,
   },
   {
-    name: 'AI Publish',
-    translationKey: 'aiSocial',
-    path: '/ai-social',
-    icon: <Sparkles size={20} />,
+    name: 'Channels',
+    translationKey: 'channels',
+    path: '/channels',
+    icon: <Tv size={20} />,
   },
   {
-    name: 'Task History',
-    translationKey: 'tasksHistory',
-    path: '/tasks-history',
+    name: 'Content',
+    translationKey: 'content',
+    path: '/draft-box',
+    icon: <FileText size={20} />,
+  },
+  {
+    name: 'Schedule',
+    translationKey: 'schedule',
+    path: '/schedule',
+    icon: <CalendarDays size={20} />,
+  },
+  {
+    name: 'Results',
+    translationKey: 'results',
+    path: '/results',
     icon: <History size={20} />,
-  },
-  {
-    name: 'Publish',
-    translationKey: 'accounts',
-    path: '/accounts',
-    icon: <Upload size={20} />,
-  },
-  {
-    name: 'Agent Assets',
-    translationKey: 'header.agentAssets',
-    path: '/agent-assets',
-    icon: <Bot size={20} />,
   },
 ]
 

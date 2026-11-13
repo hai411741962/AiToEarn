@@ -13,7 +13,7 @@ import { useShallow } from 'zustand/shallow'
 
 import { EmailLoginForm } from '@/app/[lng]/auth/login/components/LoginContent/EmailLoginForm'
 import { useTransClient } from '@/app/i18n/client'
-import logo from '@/assets/images/logo.png'
+import logo from '@/assets/images/onegaotong-logo.png'
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog'
 
 import { useIsMobile } from '@/hooks/useIsMobile'
@@ -78,7 +78,7 @@ const LoginDialogContent = memo(() => {
         <div className="flex flex-col items-center pb-2 pt-2">
           <Image
             src={logo}
-            alt="AiToEarn"
+            alt="一稿通"
             width={56}
             height={56}
             className="mb-4 drop-shadow-md"

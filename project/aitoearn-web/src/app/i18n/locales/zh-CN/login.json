@@ -1,11 +1,11 @@
 {
   "seo": {
     "loginTitle": "登录 - 进入您的AI内容创作工作台",
-    "loginKeywords": "登录, 注册, AiToEarn账号, AI平台登录, 创作者登录, 社媒管理登录",
-    "loginDescription": "登录 AiToEarn 账户，开始您的 AI 创作之旅。支持手机验证码登录和邮箱验证码登录。"
+    "loginKeywords": "登录, 注册, 一稿通账号, AI平台登录, 创作者登录, 社媒管理登录",
+    "loginDescription": "登录一稿通，开始内容创作与多平台发布。支持手机验证码登录和邮箱验证码登录。"
   },
   "welcomeBack": "登录",
-  "loginSubtitle": "用AI，赚点钱",
+  "loginSubtitle": "内容创作与多平台发布，一一稿通位",
   "emailPlaceholder": "请输入邮箱地址",
   "login": "登录",
   "or": "或者",

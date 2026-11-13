@@ -13,7 +13,7 @@ import Image from 'next/image'
 import { useSearchParams } from 'next/navigation'
 import { Suspense, useCallback, useEffect, useRef, useState } from 'react'
 
-import logo from '@/assets/images/logo.png'
+import logo from '@/assets/images/onegaotong-logo.png'
 import douyinIcon from '@/assets/svgs/plat/douyin.svg'
 import { openApp } from '@/utils/appLaunch'
 
@@ -111,8 +111,8 @@ function AnimationStyles() {
 function BrandHeader() {
   return (
     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
-      <Image src={logo} alt="AiToEarn" width={32} height={32} style={{ borderRadius: 8 }} />
-      <span style={{ fontSize: 18, fontWeight: 600, color: colors.text, letterSpacing: '-0.025em' }}>AiToEarn</span>
+      <Image src={logo} alt="一稿通" width={32} height={32} style={{ borderRadius: 8 }} />
+      <span style={{ fontSize: 18, fontWeight: 600, color: colors.text, letterSpacing: '-0.025em' }}>一稿通</span>
     </div>
   )
 }

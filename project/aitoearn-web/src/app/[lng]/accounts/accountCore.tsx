@@ -16,6 +16,7 @@ import PublishDialog from '@/components/PublishDialog'
 import { VideoGrabFrame } from '@/components/PublishDialog/PublishDialog.util'
 import { usePublishDialog } from '@/components/PublishDialog/usePublishDialog'
 import { useAccountStore } from '@/store/account'
+import { useUserStore } from '@/store/user'
 import { generateUUID } from '@/utils/common'
 import { useCalendarTiming } from './components/CalendarTiming/useCalendarTiming'
 import { useNewWork } from './hooks/useNewWork'
@@ -47,6 +48,7 @@ export default function AccountPageCore({ searchParams }: AccountPageCoreProps) 
       accountListInitialized: state.accountListInitialized,
     })),
   )
+  const { token, userHydrated } = useUserStore(useShallow(state => ({ token: state.token, userHydrated: state._hasHydrated })))
 
   const { t } = useTransClient('account')
 
@@ -74,9 +76,22 @@ export default function AccountPageCore({ searchParams }: AccountPageCoreProps) 
     setDefaultAccountIds,
   })
 
+  // 工作台的“创建并发布”入口复用现有发布弹窗。
+  const initialPublishHandled = useRef(false)
   useEffect(() => {
-    accountInit()
-  }, [])
+    if (searchParams?.action !== 'publish' || !userHydrated || !token || !accountListInitialized || accountLoading || initialPublishHandled.current)
+      return
+    initialPublishHandled.current = true
+    openNewWork()
+    const url = new URL(window.location.href)
+    url.searchParams.delete('action')
+    window.history.replaceState({}, '', url.toString())
+  }, [searchParams?.action, accountListInitialized, accountLoading, openNewWork, token, userHydrated])
+
+  useEffect(() => {
+    if (userHydrated && token)
+      void accountInit()
+  }, [accountInit, token, userHydrated])
 
   // 处理URL参数
   useEffect(() => {

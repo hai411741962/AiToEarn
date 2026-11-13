@@ -12,7 +12,7 @@ import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 
 import { useTransClient } from '@/app/i18n/client'
-import logo from '@/assets/images/logo.png'
+import logo from '@/assets/images/onegaotong-logo.png'
 import { useUserStore } from '@/store/user'
 
 import { EmailLoginForm } from './EmailLoginForm'
