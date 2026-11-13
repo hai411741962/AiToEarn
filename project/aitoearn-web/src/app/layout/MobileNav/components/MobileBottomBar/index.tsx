@@ -13,8 +13,8 @@ import { cn } from '@/utils/className'
 
 const bottomNavItems = [
   { routerKey: 'workspace', labelKey: 'workspace', testId: 'workspace' },
+  { routerKey: 'content', labelKey: 'contentNav', testId: 'content' },
   { routerKey: 'channels', labelKey: 'channels', testId: 'channels' },
-  { routerKey: 'content', labelKey: 'content', testId: 'content' },
   { routerKey: 'schedule', labelKey: 'schedule', testId: 'schedule' },
   { routerKey: 'results', labelKey: 'results', testId: 'results' },
 ] as const

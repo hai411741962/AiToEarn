@@ -32,16 +32,16 @@ export const routerData: IRouterDataItem[] = [
     icon: <LayoutDashboard size={20} />,
   },
   {
-    name: 'Channels',
-    translationKey: 'channels',
-    path: '/channels',
-    icon: <Tv size={20} />,
-  },
-  {
     name: 'Content',
     translationKey: 'content',
     path: '/draft-box',
     icon: <FileText size={20} />,
+  },
+  {
+    name: 'Channels',
+    translationKey: 'channels',
+    path: '/channels',
+    icon: <Tv size={20} />,
   },
   {
     name: 'Schedule',

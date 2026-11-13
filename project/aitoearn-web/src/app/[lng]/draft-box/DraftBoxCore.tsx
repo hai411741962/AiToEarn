@@ -5,18 +5,18 @@
 
 'use client'
 
-import { Loader2, Plus, Sparkles } from 'lucide-react'
+import { FileText, Loader2, Plus } from 'lucide-react'
 import { usePathname, useSearchParams } from 'next/navigation'
 import { useCallback, useEffect, useRef } from 'react'
 import { useShallow } from 'zustand/react/shallow'
 import { useTransClient } from '@/app/i18n/client'
 import CreatePlanModal from '@/components/draft-box/components/CreatePlanModal'
-import DraftContentModule from '@/components/draft-box/components/DraftContentModule'
 import PlanTabBar from '@/components/draft-box/components/PlanTabBar'
 import { Button } from '@/components/ui/button'
 import { useBrandPromotionStore } from '@/store/draft-box/brandPromotionStore'
 import { usePlanDetailStore } from '@/store/draft-box/planDetailStore'
 import { usePlanTabStore } from '@/store/draft-box/planTabStore'
+import { ContentLibrary } from './components/ContentLibrary'
 import { ContentStartBar } from './components/ContentStartBar'
 
 export default function DraftBoxCore() {
@@ -166,8 +166,8 @@ export default function DraftBoxCore() {
           <div className="flex flex-col h-full bg-background">
             <div className="flex-1 flex items-center justify-center p-4">
               <div className="text-center max-w-md">
-                <div className="mx-auto w-20 h-20 rounded-full bg-gradient-to-br from-[#c565ef]/10 to-[#55D9ED]/10 flex items-center justify-center mb-6">
-                  <Sparkles className="h-10 w-10 text-foreground/60" />
+                <div className="mx-auto mb-6 flex size-20 items-center justify-center rounded-full bg-muted">
+                  <FileText className="h-10 w-10 text-muted-foreground" />
                 </div>
                 <h2 className="text-xl font-semibold text-foreground mb-2">
                   {t('empty.title')}
@@ -202,7 +202,7 @@ export default function DraftBoxCore() {
       <div className="flex-1 min-h-0">
         <div className="flex flex-col h-full bg-background">
           <div id="draft-box-scroll-content" className="flex-1 overflow-auto">
-            <DraftContentModule />
+            {selectedPlanId && <ContentLibrary planId={selectedPlanId} />}
           </div>
         </div>
       </div>

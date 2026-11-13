@@ -36,6 +36,7 @@ const MobileContent = memo(
     groupId,
     editingMaterial,
     isSubmitting: externalSubmitting,
+    contentFirst = false,
     onClose,
     onSuccess,
   }: Omit<CreateMaterialModalProps, 'open'>) => {
@@ -56,6 +57,7 @@ const MobileContent = memo(
       groupId,
       editingMaterial,
       isSubmitting: externalSubmitting,
+      contentFirst,
       onClose,
       onSuccess,
     })
@@ -218,12 +220,14 @@ const MobileContent = memo(
         {/* 可滚动内容区 */}
         <div className="flex-1 overflow-y-auto px-4 py-4">
           {/* 平台选择器 */}
-          <div className="mb-4 border-b border-border pb-3">
-            <InlinePlatformSelector
-              selectedPlatforms={params.selectedPlatforms}
-              onPlatformsChange={platforms => updateParams({ selectedPlatforms: platforms })}
-            />
-          </div>
+          {!contentFirst && (
+            <div className="mb-4 border-b border-border pb-3">
+              <InlinePlatformSelector
+                selectedPlatforms={params.selectedPlatforms}
+                onPlatformsChange={platforms => updateParams({ selectedPlatforms: platforms })}
+              />
+            </div>
+          )}
 
           {/* 提交后平台兼容性问题 */}
           {validationIssues.length > 0 && (
@@ -394,20 +398,22 @@ const MobileContent = memo(
 
         {/* 底部栏 */}
         <div className="flex items-center justify-between px-4 h-14 border-t border-border shrink-0">
-          <Button
-            variant="ghost"
-            size="sm"
-            className="cursor-pointer transition-all hover:bg-gradient-to-r hover:from-purple-500/10 hover:to-blue-500/10"
-            onClick={(e) => {
-              e.stopPropagation()
-              router.push(
-                `/ai-social?agentExternalPrompt=${encodeURIComponent(t('detail.agentGeneratePrompt'))}`,
-              )
-            }}
-          >
-            <Bot className="mr-1 h-4 w-4" />
-            {t('detail.agentGenerate')}
-          </Button>
+          {!contentFirst && (
+            <Button
+              variant="ghost"
+              size="sm"
+              className="cursor-pointer transition-all hover:bg-gradient-to-r hover:from-purple-500/10 hover:to-blue-500/10"
+              onClick={(e) => {
+                e.stopPropagation()
+                router.push(
+                  `/ai-social?agentExternalPrompt=${encodeURIComponent(t('detail.agentGeneratePrompt'))}`,
+                )
+              }}
+            >
+              <Bot className="mr-1 h-4 w-4" />
+              {t('detail.agentGenerate')}
+            </Button>
+          )}
           <Button onClick={handleSubmit} disabled={submitting} className="cursor-pointer">
             {t('common.confirm')}
           </Button>
