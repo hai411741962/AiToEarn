@@ -93,6 +93,8 @@ AiToEarn 最核心的目标：帮助每一位创作者赚钱。创作者在平�
 
 一键将内容分发到 14+ 主流平台，告别逐个平台手动发布。统一日历排期，像排日程一样规划所有平台的发布时间。
 
+在「添加频道」中可按「图文 / 文章」「视频」筛选平台。百家号提供文章和视频的手动发布准备入口：在网页中编辑并保存文案，复制后前往百家号后台上传素材、完成提交；百家号尚未接入站内直发。
+
 ![Publish](presentation/publish-cn.png) ![Channels](presentation/channel-cn.png)
 
 ▶ 演示视频：[YouTube — Publish](https://www.youtube.com/watch?v=5041jEKaiU8)

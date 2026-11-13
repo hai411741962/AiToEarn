@@ -5,10 +5,12 @@
 
 'use client'
 
-import { ArrowLeft, Sparkles } from 'lucide-react'
+import { ArrowLeft, BookOpenText, Sparkles } from 'lucide-react'
+import { useState } from 'react'
 import { toast } from 'sonner'
 import { useShallow } from 'zustand/react/shallow'
 import { PlatType } from '@/app/config/platConfig'
+import { PubType } from '@/app/config/publishConfig'
 import { useTransClient } from '@/app/i18n/client'
 import { PlatformIcon } from '@/components/common/PlatformIcon'
 import { Button } from '@/components/ui/button'
@@ -24,11 +26,23 @@ import { navigateToLogin } from '@/utils/auth'
 import { confirmPlatformRegionRedirect } from '@/utils/region/redirect'
 import { confirm } from '@/utils/ui/confirm'
 import { useChannelManagerStore } from '../channelManagerStore'
+import { BaijiahaoManualDialog } from './BaijiahaoManualDialog'
 
 export function ConnectChannelList() {
   const { t } = useTransClient('account')
   const isMobile = useIsMobile()
   const platforms = useRegionSortedPlatforms()
+  const [baijiahaoOpen, setBaijiahaoOpen] = useState(false)
+  const [contentFilter, setContentFilter] = useState<'all' | 'article' | 'video'>('all')
+  const visiblePlatforms = platforms.filter(([, info]) => {
+    if (contentFilter === 'article') {
+      return info.pubTypes.has(PubType.ImageText) || info.pubTypes.has(PubType.Article)
+    }
+    if (contentFilter === 'video') {
+      return info.pubTypes.has(PubType.VIDEO)
+    }
+    return true
+  })
 
   const { isNewUser, setCurrentView, startAuth, targetSpaceId, setTargetSpaceId, closeModal }
     = useChannelManagerStore(
@@ -132,6 +146,20 @@ export function ConnectChannelList() {
       )}
 
       {/* 平台网格 */}
+      <div className="flex flex-wrap gap-2 px-4 pt-4" aria-label={t('channelManager.baijiahao.filterLabel')}>
+        {(['all', 'article', 'video'] as const).map(filter => (
+          <Button
+            key={filter}
+            data-testid={`cm-content-filter-${filter}`}
+            size="sm"
+            variant={contentFilter === filter ? 'default' : 'outline'}
+            className="cursor-pointer rounded-full"
+            onClick={() => setContentFilter(filter)}
+          >
+            {t(`channelManager.baijiahao.filter${filter[0].toUpperCase()}${filter.slice(1)}`)}
+          </Button>
+        ))}
+      </div>
       <ScrollArea className="flex-1 p-4">
         <div
           data-testid="cm-connect-list"
@@ -145,7 +173,20 @@ export function ConnectChannelList() {
           "
         >
           <TooltipProvider>
-            {platforms.map(([key, value]) => {
+            <Button
+              data-testid="cm-baijiahao-manual-card"
+              variant="ghost"
+              className="group relative flex h-[90px] min-w-0 w-full cursor-pointer flex-col items-center justify-center rounded-lg border border-border bg-card p-2 text-center transition-all duration-200 hover:-translate-y-0.5 hover:border-foreground/30 hover:bg-accent hover:shadow-md sm:h-[100px] sm:rounded-xl md:h-[110px]"
+              onClick={() => setBaijiahaoOpen(true)}
+            >
+              <span className="absolute -right-px -top-px rounded-bl rounded-tr-lg bg-muted px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
+                {t('channelManager.baijiahao.manualBadge')}
+              </span>
+              <BookOpenText className="mb-1.5 h-10 w-10 text-primary transition-transform group-hover:scale-110" />
+              <span className="text-xs font-medium text-foreground">{t('channelManager.baijiahao.name')}</span>
+              <span className="text-[10px] text-muted-foreground">{t('channelManager.baijiahao.capabilities')}</span>
+            </Button>
+            {visiblePlatforms.map(([key, value]) => {
               const isDisabled = isPlatformComingSoon(value)
               const isRegionLimited = isPlatformRegionLimited(value)
               const isBrowserPlugin = value.authType === 'plugin'
@@ -238,6 +279,7 @@ export function ConnectChannelList() {
           </TooltipProvider>
         </div>
       </ScrollArea>
+      <BaijiahaoManualDialog open={baijiahaoOpen} onOpenChange={setBaijiahaoOpen} />
     </div>
   )
 }

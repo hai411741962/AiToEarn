@@ -94,6 +94,8 @@ The core mission of AiToEarn: help every creator earn money. Creators sell conte
 
 Distribute content to 14+ major platforms with one click — no more manual posting on each platform. Plan and coordinate publishing across all platforms like a calendar.
 
+In Add Channels, filter platforms by images/articles or videos. BaiJiaHao has a manual preparation flow for articles and videos: edit and save text in the web app, then copy it and upload media in the official BaiJiaHao dashboard. Direct in-app publishing to BaiJiaHao is not yet connected.
+
 ![Publish](presentation/publish-cn.png) ![Channels](presentation/channel-cn.png)
 
 ▶ Demo video: [YouTube — Publish](https://www.youtube.com/watch?v=5041jEKaiU8)
