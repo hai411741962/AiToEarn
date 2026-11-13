@@ -5,6 +5,7 @@
 
 'use client'
 
+import type { ManualChannel } from './ManualPublishDialog'
 import { ArrowLeft, BookOpenText, Sparkles } from 'lucide-react'
 import { useState } from 'react'
 import { toast } from 'sonner'
@@ -26,13 +27,13 @@ import { navigateToLogin } from '@/utils/auth'
 import { confirmPlatformRegionRedirect } from '@/utils/region/redirect'
 import { confirm } from '@/utils/ui/confirm'
 import { useChannelManagerStore } from '../channelManagerStore'
-import { BaijiahaoManualDialog } from './BaijiahaoManualDialog'
+import { MANUAL_CHANNELS, ManualPublishDialog } from './ManualPublishDialog'
 
 export function ConnectChannelList() {
   const { t } = useTransClient('account')
   const isMobile = useIsMobile()
   const platforms = useRegionSortedPlatforms()
-  const [baijiahaoOpen, setBaijiahaoOpen] = useState(false)
+  const [manualChannel, setManualChannel] = useState<ManualChannel | null>(null)
   const [contentFilter, setContentFilter] = useState<'all' | 'article' | 'video'>('all')
   const visiblePlatforms = platforms.filter(([, info]) => {
     if (contentFilter === 'article') {
@@ -146,7 +147,7 @@ export function ConnectChannelList() {
       )}
 
       {/* 平台网格 */}
-      <div className="flex flex-wrap gap-2 px-4 pt-4" aria-label={t('channelManager.baijiahao.filterLabel')}>
+      <div className="flex flex-wrap gap-2 px-4 pt-4" aria-label={t('channelManager.manualPublish.filterLabel')}>
         {(['all', 'article', 'video'] as const).map(filter => (
           <Button
             key={filter}
@@ -156,7 +157,7 @@ export function ConnectChannelList() {
             className="cursor-pointer rounded-full"
             onClick={() => setContentFilter(filter)}
           >
-            {t(`channelManager.baijiahao.filter${filter[0].toUpperCase()}${filter.slice(1)}`)}
+            {t(`channelManager.manualPublish.filter${filter[0].toUpperCase()}${filter.slice(1)}`)}
           </Button>
         ))}
       </div>
@@ -173,19 +174,22 @@ export function ConnectChannelList() {
           "
         >
           <TooltipProvider>
-            <Button
-              data-testid="cm-baijiahao-manual-card"
-              variant="ghost"
-              className="group relative flex h-[90px] min-w-0 w-full cursor-pointer flex-col items-center justify-center rounded-lg border border-border bg-card p-2 text-center transition-all duration-200 hover:-translate-y-0.5 hover:border-foreground/30 hover:bg-accent hover:shadow-md sm:h-[100px] sm:rounded-xl md:h-[110px]"
-              onClick={() => setBaijiahaoOpen(true)}
-            >
-              <span className="absolute -right-px -top-px rounded-bl rounded-tr-lg bg-muted px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
-                {t('channelManager.baijiahao.manualBadge')}
-              </span>
-              <BookOpenText className="mb-1.5 h-10 w-10 text-primary transition-transform group-hover:scale-110" />
-              <span className="text-xs font-medium text-foreground">{t('channelManager.baijiahao.name')}</span>
-              <span className="text-[10px] text-muted-foreground">{t('channelManager.baijiahao.capabilities')}</span>
-            </Button>
+            {(Object.keys(MANUAL_CHANNELS) as ManualChannel[]).map(platform => (
+              <Button
+                key={platform}
+                data-testid={`cm-${platform}-manual-card`}
+                variant="ghost"
+                className="group relative flex h-[90px] min-w-0 w-full cursor-pointer flex-col items-center justify-center rounded-lg border border-border bg-card p-2 text-center transition-all duration-200 hover:-translate-y-0.5 hover:border-foreground/30 hover:bg-accent hover:shadow-md sm:h-[100px] sm:rounded-xl md:h-[110px]"
+                onClick={() => setManualChannel(platform)}
+              >
+                <span className="absolute -right-px -top-px rounded-bl rounded-tr-lg bg-muted px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
+                  {t('channelManager.manualPublish.manualBadge')}
+                </span>
+                <BookOpenText className="mb-1.5 h-10 w-10 text-primary transition-transform group-hover:scale-110" />
+                <span className="text-xs font-medium text-foreground">{t(`channelManager.manualChannels.${platform}`)}</span>
+                <span className="text-[10px] text-muted-foreground">{t('channelManager.manualPublish.capabilities')}</span>
+              </Button>
+            ))}
             {visiblePlatforms.map(([key, value]) => {
               const isDisabled = isPlatformComingSoon(value)
               const isRegionLimited = isPlatformRegionLimited(value)
@@ -279,7 +283,14 @@ export function ConnectChannelList() {
           </TooltipProvider>
         </div>
       </ScrollArea>
-      <BaijiahaoManualDialog open={baijiahaoOpen} onOpenChange={setBaijiahaoOpen} />
+      {manualChannel && (
+        <ManualPublishDialog
+          key={manualChannel}
+          platform={manualChannel}
+          open
+          onOpenChange={open => !open && setManualChannel(null)}
+        />
+      )}
     </div>
   )
 }
