@@ -44,6 +44,9 @@ export class RelayExceptionFilter extends GlobalExceptionFilter<unknown> {
     if (!this.relayConfig) {
       return super.catch(exception, host)
     }
+    if (!this.relayConfig.apiKey.trim()) {
+      return super.catch(new AppException(ResponseCode.RelayApiKeyMissing), host)
+    }
 
     return from(this.handleRelay(exception, host)).pipe(concatMap(v => v || of(v)))
   }
@@ -113,9 +116,7 @@ export class RelayExceptionFilter extends GlobalExceptionFilter<unknown> {
       try {
         this.logger.debug({
           method: request.method as Method,
-          url: targetUrl,
-          data: targetBody,
-          headers: forwardHeaders,
+          path: request.originalUrl.split('?')[0],
         })
 
         const proxyResponse = await axios({
@@ -125,9 +126,7 @@ export class RelayExceptionFilter extends GlobalExceptionFilter<unknown> {
           headers: forwardHeaders,
           validateStatus: () => true,
         })
-        this.logger.debug({
-          proxyResponse,
-        })
+        this.logger.debug({ status: proxyResponse.status, code: proxyResponse.data?.code })
 
         response.status(proxyResponse.status).json(proxyResponse.data)
       }

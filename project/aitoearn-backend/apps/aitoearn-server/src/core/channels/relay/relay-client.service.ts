@@ -17,7 +17,7 @@ export class RelayClientService {
   private readonly logger = new Logger(RelayClientService.name)
 
   get enabled() {
-    return !!config.relay
+    return !!config.relay?.apiKey.trim()
   }
 
   async get<T>(path: string, params?: Record<string, any>): Promise<T> {
@@ -63,8 +63,8 @@ export class RelayClientService {
   }
 
   private async request<T>(options: AxiosRequestConfig): Promise<T> {
-    if (!config.relay) {
-      throw new AppException(ResponseCode.RelayServerUnavailable)
+    if (!config.relay?.apiKey.trim()) {
+      throw new AppException(ResponseCode.RelayApiKeyMissing)
     }
 
     try {

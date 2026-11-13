@@ -20,6 +20,7 @@ export function startChannelAccountAuthApi(
       groupId: params?.groupId,
     },
     credentials: 'include',
+    silent: true,
   })
 }
 

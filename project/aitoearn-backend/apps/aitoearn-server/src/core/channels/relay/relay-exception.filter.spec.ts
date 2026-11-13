@@ -1,6 +1,7 @@
 import type { ArgumentsHost } from '@nestjs/common'
 import type { Request, Response } from 'express'
 import type { Observable } from 'rxjs'
+import { ResponseCode } from '@yikart/common'
 import { firstValueFrom } from 'rxjs'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { z } from 'zod'
@@ -36,6 +37,19 @@ describe('relay exception filter', () => {
       status: 200,
       data: { code: 0, data: { ok: true } },
     })
+  })
+
+  it('reports a missing relay API key before forwarding the auth request', () => {
+    const response = createResponse()
+    const filter = new RelayExceptionFilter({ ...relayConfig, apiKey: '' }, undefined, undefined, createRedisService())
+    const logger = createLogger()
+    Reflect.set(filter, 'logger', logger)
+
+    filter.catch(new RelayAuthException(), createHost({ headers: {} }, response))
+
+    expect(axiosMock.request).not.toHaveBeenCalled()
+    expect(response.status).toHaveBeenCalledWith(200)
+    expect(response.json).toHaveBeenCalledWith(expect.objectContaining({ code: ResponseCode.RelayApiKeyMissing }))
   })
 
   it('issues a one-time ticket for the relay auth callback', async () => {
@@ -79,8 +93,7 @@ describe('relay exception filter', () => {
     expect(logger.debug).toHaveBeenCalledWith(
       expect.objectContaining({
         method: 'GET',
-        url: expect.stringContaining('callbackUrl='),
-        data: undefined,
+        path: '/api/v2/channels/accounts/auth/twitter',
       }),
     )
     expect(response.status).toHaveBeenCalledWith(200)
@@ -147,6 +160,7 @@ function createRedisService() {
 
 function createHost(request: Partial<Request> & { user?: { id?: string } }, response: Partial<Response>): ArgumentsHost {
   return {
+    getType: () => 'http',
     switchToHttp: () => ({
       getRequest: () => request,
       getResponse: () => response,
