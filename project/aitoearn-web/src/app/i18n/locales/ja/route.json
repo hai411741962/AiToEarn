@@ -112,6 +112,7 @@
     "manual": "手動作成",
     "edit": "編集",
     "publish": "公開へ",
+    "publishToCsdn": "CSDN に自動投稿",
     "delete": "削除",
     "loadMore": "さらに読み込む",
     "editArticle": "記事を編集",

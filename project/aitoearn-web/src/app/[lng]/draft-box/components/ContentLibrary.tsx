@@ -8,6 +8,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { apiCreateMaterial, apiDeleteMaterial, apiGetMaterialList, apiUpdateMaterial } from '@/api/materials/material.api'
 import { PubType } from '@/app/config/publishConfig'
 import { useTransClient } from '@/app/i18n/client'
+import { CsdnAutoPublishPanel } from '@/components/ChannelManager/components/CsdnAutoPublishPanel'
 import { CreateMaterialModal } from '@/components/draft-box/components/CreateMaterialModal'
 import PublishDialog from '@/components/PublishDialog'
 import { buildPublishParamsFromDraft } from '@/components/PublishDialog/PublishDialog.util'
@@ -70,6 +71,7 @@ export function ContentLibrary({ planId }: ContentLibraryProps) {
   const [manualTitle, setManualTitle] = useState('')
   const [manualBody, setManualBody] = useState('')
   const [publishing, setPublishing] = useState<PromotionMaterial | null>(null)
+  const [csdnPublishing, setCsdnPublishing] = useState<PromotionMaterial | null>(null)
   const prefilledDraftId = useRef<string | null>(null)
   const selectedAccountCount = usePublishDialog(state => state.pubListChoosed.length)
   const accounts = useAccountStore(state => state.accountList)
@@ -247,7 +249,7 @@ export function ContentLibrary({ planId }: ContentLibraryProps) {
       </div>
 
       <div className="overflow-hidden rounded-xl border border-border bg-card">
-        <div className="hidden grid-cols-[minmax(0,1fr)_140px_170px_210px] gap-3 border-b border-border bg-muted/40 px-4 py-3 text-xs font-medium text-muted-foreground md:grid">
+        <div className="hidden grid-cols-[minmax(0,1fr)_120px_120px_300px] gap-3 border-b border-border bg-muted/40 px-4 py-3 text-xs font-medium text-muted-foreground md:grid">
           <span>{label('title')}</span>
           <span>{label('source')}</span>
           <span>{label('createdAt')}</span>
@@ -260,7 +262,7 @@ export function ContentLibrary({ planId }: ContentLibraryProps) {
             <p className="mt-1 text-xs text-muted-foreground">{tab === 'article' ? label('articleHint') : label('videoHint')}</p>
           </div>
         ) : visibleItems.map(material => (
-          <div key={material.id} className="grid gap-2 border-b border-border px-4 py-3 last:border-b-0 md:grid-cols-[minmax(0,1fr)_140px_170px_210px] md:items-center md:gap-3">
+          <div key={material.id} className="grid gap-2 border-b border-border px-4 py-3 last:border-b-0 md:grid-cols-[minmax(0,1fr)_120px_120px_300px] md:items-center md:gap-3">
             <div className="min-w-0">
               <strong className="block truncate text-sm font-medium">{material.title || label('untitled')}</strong>
               <p className="mt-1 truncate text-xs text-muted-foreground">{material.desc || label('noDescription')}</p>
@@ -276,6 +278,11 @@ export function ContentLibrary({ planId }: ContentLibraryProps) {
                 <Send size={14} />
                 {label('publish')}
               </Button>
+              {!isVideo(material) && (
+                <Button size="sm" variant="outline" onClick={() => setCsdnPublishing(material)}>
+                  {label('publishToCsdn')}
+                </Button>
+              )}
               <Button size="sm" variant="ghost" aria-label={`${label('delete')} ${material.title}`} onClick={() => void remove(material)}><Trash2 size={14} /></Button>
             </div>
           </div>
@@ -368,6 +375,16 @@ export function ContentLibrary({ planId }: ContentLibraryProps) {
       </Dialog>
 
       <CreateMaterialModal open={videoOpen} contentFirst groupId={planId} editingMaterial={videoEditing} onClose={() => setVideoOpen(false)} onSuccess={() => void load(1)} />
+
+      <Dialog open={!!csdnPublishing} onOpenChange={open => !open && setCsdnPublishing(null)}>
+        <DialogContent className="max-h-[90dvh] overflow-y-auto sm:max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>{label('publishToCsdn')}</DialogTitle>
+            <DialogDescription>{csdnPublishing?.title}</DialogDescription>
+          </DialogHeader>
+          {csdnPublishing && <CsdnAutoPublishPanel title={csdnPublishing.title} body={csdnPublishing.desc || ''} />}
+        </DialogContent>
+      </Dialog>
 
       {publishing && accounts.length === 0 && (
         <Dialog open onOpenChange={() => setPublishing(null)}>

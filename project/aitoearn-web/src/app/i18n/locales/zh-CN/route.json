@@ -118,6 +118,7 @@
     "manual": "手动创建",
     "edit": "编辑",
     "publish": "去发布",
+    "publishToCsdn": "CSDN 自动发",
     "delete": "删除",
     "loadMore": "加载更多",
     "editArticle": "编辑文章",
