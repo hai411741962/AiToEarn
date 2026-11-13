@@ -112,6 +112,7 @@
     "manual": "직접 작성",
     "edit": "편집",
     "publish": "게시",
+    "publishToCsdn": "CSDN 자동 게시",
     "delete": "삭제",
     "loadMore": "더 보기",
     "editArticle": "글 편집",

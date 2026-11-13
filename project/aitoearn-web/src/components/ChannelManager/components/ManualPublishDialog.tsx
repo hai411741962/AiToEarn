@@ -13,6 +13,7 @@ import { Input } from '@/components/ui/input'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Textarea } from '@/components/ui/textarea'
 import { toast } from '@/utils/ui/toast'
+import { CsdnAutoPublishPanel } from './CsdnAutoPublishPanel'
 
 type ContentMode = 'article' | 'video'
 
@@ -131,7 +132,7 @@ export function ManualPublishDialog({ open, onOpenChange, platform }: ManualPubl
 
         <DialogBody className="space-y-4">
           <div className="rounded-lg border border-border bg-muted/40 p-3 text-sm text-muted-foreground">
-            {common('manualNotice')}
+            {platform === 'csdn' ? t('channelManager.csdnAuto.manualNotice') : common('manualNotice')}
           </div>
 
           <Tabs
@@ -205,6 +206,7 @@ export function ManualPublishDialog({ open, onOpenChange, platform }: ManualPubl
           <p className="text-sm text-muted-foreground">
             {common('steps')}
           </p>
+          {platform === 'csdn' && mode === 'article' && <CsdnAutoPublishPanel title={title} body={body} />}
         </DialogBody>
 
         <DialogFooter className="flex-wrap sm:justify-between">

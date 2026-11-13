@@ -183,7 +183,7 @@ export function ConnectChannelList() {
                 onClick={() => setManualChannel(platform)}
               >
                 <span className="absolute -right-px -top-px rounded-bl rounded-tr-lg bg-muted px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
-                  {t('channelManager.manualPublish.manualBadge')}
+                  {platform === 'csdn' ? t('channelManager.csdnAuto.cardBadge') : t('channelManager.manualPublish.manualBadge')}
                 </span>
                 <BookOpenText className="mb-1.5 h-10 w-10 text-primary transition-transform group-hover:scale-110" />
                 <span className="text-xs font-medium text-foreground">{t(`channelManager.manualChannels.${platform}`)}</span>

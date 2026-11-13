@@ -112,6 +112,7 @@
     "manual": "Manuell erstellt",
     "edit": "Bearbeiten",
     "publish": "Veröffentlichen",
+    "publishToCsdn": "Automatisch auf CSDN",
     "delete": "Löschen",
     "loadMore": "Mehr laden",
     "editArticle": "Artikel bearbeiten",

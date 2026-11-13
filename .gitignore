@@ -44,3 +44,4 @@ public/bin/*
 
 sh/*
 project/web/.cursor/
+.local-data/

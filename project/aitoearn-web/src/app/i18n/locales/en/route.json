@@ -117,6 +117,7 @@
     "manual": "Created here",
     "edit": "Edit",
     "publish": "Publish",
+    "publishToCsdn": "Auto publish to CSDN",
     "delete": "Delete",
     "loadMore": "Load more",
     "editArticle": "Edit article",
