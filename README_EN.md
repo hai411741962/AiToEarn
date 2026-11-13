@@ -96,7 +96,7 @@ Distribute content to 14+ major platforms with one click — no more manual post
 
 In Add Channels, filter platforms by images/articles or videos. BaiJiaHao, CSDN, and Zhihu have a manual preparation flow for articles and videos: edit and save text in the web app, then copy it and upload media in each platform's official dashboard. Direct in-app publishing to these three platforms is not yet connected.
 
-Articles & Videos follows a content-first flow: write an article, manage videos, or paste a public HTTPS article link to extract its title and text. Review the result and save an editable draft; choose connected channels and accounts only when you click Publish. Sites that block extraction return an error, and importing never publishes the original article.
+Articles & Videos follows a content-first flow: write an article, manage videos, or paste a public HTTPS article link to extract its title and text. Review the result and save an editable draft; choose connected channels and accounts only when you click Publish. If a site blocks extraction, open the original and paste its title and body manually while retaining the source link. Importing never publishes the original article.
 
 ![Publish](presentation/publish-cn.png) ![Channels](presentation/channel-cn.png)
 

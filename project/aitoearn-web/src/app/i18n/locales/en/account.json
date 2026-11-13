@@ -522,7 +522,7 @@
     },
     "manualPublish": {
       "name": "BaiJiaHao",
-      "manualBadge": "Manual",
+      "manualBadge": "Publish on platform",
       "capabilities": "Articles · Videos",
       "filterLabel": "Filter channels by content type",
       "filterAll": "All channels",

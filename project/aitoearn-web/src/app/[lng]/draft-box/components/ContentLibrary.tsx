@@ -1,7 +1,7 @@
 'use client'
 
 import type { PromotionMaterial } from '@/api/materials/material.types'
-import { FileText, Link2, Loader2, Pencil, Plus, Search, Send, Trash2, Video } from 'lucide-react'
+import { ExternalLink, FileText, Link2, Loader2, Pencil, Plus, Search, Send, Trash2, Video } from 'lucide-react'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
@@ -36,6 +36,14 @@ function isVideo(material: PromotionMaterial) {
   return material.type === PubType.VIDEO || material.mediaList?.some(media => media.type === 'video')
 }
 
+function validSourceUrl(raw: string) {
+  try {
+    const url = new URL(raw)
+    return url.protocol === 'https:' && !url.username && !url.password && !!url.hostname.includes('.')
+  }
+  catch { return false }
+}
+
 export function ContentLibrary({ planId }: ContentLibraryProps) {
   const { t } = useTransClient('route')
   const { lng } = useParams<{ lng: string }>()
@@ -58,6 +66,9 @@ export function ContentLibrary({ planId }: ContentLibraryProps) {
   const [imported, setImported] = useState<ImportedArticle | null>(null)
   const [importing, setImporting] = useState(false)
   const [importError, setImportError] = useState('')
+  const [manualImport, setManualImport] = useState(false)
+  const [manualTitle, setManualTitle] = useState('')
+  const [manualBody, setManualBody] = useState('')
   const [publishing, setPublishing] = useState<PromotionMaterial | null>(null)
   const prefilledDraftId = useRef<string | null>(null)
   const selectedAccountCount = usePublishDialog(state => state.pubListChoosed.length)
@@ -124,30 +135,41 @@ export function ContentLibrary({ planId }: ContentLibraryProps) {
       if (!response.ok)
         throw new Error(result.error || label('extractFailed'))
       setImported(result)
+      setManualImport(false)
     }
-    catch (error) { setImportError(error instanceof Error ? error.message : label('extractFailed')) }
+    catch (error) {
+      setImportError(error instanceof Error ? error.message : label('extractFailed'))
+      if (validSourceUrl(importUrl.trim()))
+        setManualImport(true)
+    }
     finally { setImporting(false) }
   }
 
   const saveImported = async () => {
-    if (!imported)
+    const article = imported || (manualImport && validSourceUrl(importUrl.trim()) && manualTitle.trim() && manualBody.trim()
+      ? { title: manualTitle.trim(), body: manualBody.trim(), sourceUrl: importUrl.trim() }
+      : null)
+    if (!article)
       return
     setSaving(true)
     try {
       const response = await apiCreateMaterial({
         groupId: planId,
-        title: imported.title,
-        desc: imported.body,
+        title: article.title,
+        desc: article.body,
         mediaList: [],
         type: PubType.ImageText,
         accountTypes: [],
-        option: { sourceUrl: imported.sourceUrl },
+        option: { sourceUrl: article.sourceUrl },
       })
       if (response?.code !== 0)
         throw new Error(response?.message || label('saveFailed'))
       setImportOpen(false)
       setImported(null)
       setImportUrl('')
+      setManualImport(false)
+      setManualTitle('')
+      setManualBody('')
       toast.success(label('importSaved'))
       await load(1)
     }
@@ -282,7 +304,19 @@ export function ContentLibrary({ planId }: ContentLibraryProps) {
         </DialogContent>
       </Dialog>
 
-      <Dialog open={importOpen} onOpenChange={setImportOpen}>
+      <Dialog
+        open={importOpen}
+        onOpenChange={(open) => {
+          setImportOpen(open)
+          if (!open) {
+            setImported(null)
+            setImportError('')
+            setManualImport(false)
+            setManualTitle('')
+            setManualBody('')
+          }
+        }}
+      >
         <DialogContent className="max-h-[90dvh] overflow-y-auto sm:max-w-2xl">
           <DialogHeader>
             <DialogTitle>{label('importLink')}</DialogTitle>
@@ -292,8 +326,32 @@ export function ContentLibrary({ planId }: ContentLibraryProps) {
             {label('articleUrl')}
             <Input type="url" value={importUrl} onChange={(event) => { setImportUrl(event.target.value); setImported(null); setImportError('') }} placeholder="https://" />
           </label>
-          <div className="flex justify-end"><Button variant="outline" disabled={!importUrl.trim() || importing} onClick={() => void extract()}>{importing ? label('extracting') : label('extractPreview')}</Button></div>
+          <div className="flex flex-wrap justify-end gap-2">
+            <Button variant="ghost" disabled={!validSourceUrl(importUrl.trim())} onClick={() => { setImported(null); setManualImport(true) }}>{label('pasteManually')}</Button>
+            <Button variant="outline" disabled={!importUrl.trim() || importing} onClick={() => void extract()}>{importing ? label('extracting') : label('extractPreview')}</Button>
+          </div>
           {importError && <p role="alert" className="text-sm text-destructive">{importError}</p>}
+          {manualImport && !imported && (
+            <div className="space-y-3 rounded-lg border border-border bg-muted/30 p-4">
+              <p className="text-sm text-muted-foreground">{label('manualImportHint')}</p>
+              {validSourceUrl(importUrl.trim()) && (
+                <Button variant="link" className="h-auto p-0" asChild>
+                  <a href={importUrl.trim()} target="_blank" rel="noopener noreferrer">
+                    <ExternalLink size={15} />
+                    {label('openOriginal')}
+                  </a>
+                </Button>
+              )}
+              <label className="block space-y-1 text-sm font-medium">
+                {label('title')}
+                <Input value={manualTitle} onChange={event => setManualTitle(event.target.value)} maxLength={200} />
+              </label>
+              <label className="block space-y-1 text-sm font-medium">
+                {label('body')}
+                <Textarea value={manualBody} onChange={event => setManualBody(event.target.value)} rows={8} className="resize-y" />
+              </label>
+            </div>
+          )}
           {imported && (
             <div className="space-y-2 rounded-lg border border-border bg-muted/30 p-4">
               <strong className="block text-sm">{imported.title}</strong>
@@ -304,7 +362,7 @@ export function ContentLibrary({ planId }: ContentLibraryProps) {
           <p className="text-xs text-muted-foreground">{label('rightsNote')}</p>
           <DialogFooter>
             <Button variant="outline" onClick={() => setImportOpen(false)}>{label('cancel')}</Button>
-            <Button disabled={!imported || saving} onClick={() => void saveImported()}>{saving ? label('saving') : label('saveDraft')}</Button>
+            <Button disabled={!(imported || (manualImport && validSourceUrl(importUrl.trim()) && manualTitle.trim() && manualBody.trim())) || saving} onClick={() => void saveImported()}>{saving ? label('saving') : label('saveDraft')}</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

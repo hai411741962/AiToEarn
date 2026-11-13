@@ -515,7 +515,7 @@
     },
     "manualPublish": {
       "name": "BaiJiaHao",
-      "manualBadge": "Manuel",
+      "manualBadge": "Publier sur la plateforme",
       "capabilities": "Articles · Vidéos",
       "filterLabel": "Filtrer les canaux par type de contenu",
       "filterAll": "Tous les canaux",
