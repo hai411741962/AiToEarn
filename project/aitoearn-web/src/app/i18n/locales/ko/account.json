@@ -515,7 +515,7 @@
     },
     "manualPublish": {
       "name": "바이자하오",
-      "manualBadge": "수동 게시",
+      "manualBadge": "플랫폼에서 게시",
       "capabilities": "기사 · 동영상",
       "filterLabel": "콘텐츠 유형으로 채널 필터링",
       "filterAll": "모든 채널",
