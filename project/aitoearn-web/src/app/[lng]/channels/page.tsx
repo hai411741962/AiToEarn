@@ -30,7 +30,7 @@ export default function ChannelsPage() {
         <div>
           <div className="mb-2 flex items-center gap-2 text-xs font-medium text-primary">
             <Tv size={15} />
-            01 /
+            02 /
             {' '}
             {t('channels')}
           </div>

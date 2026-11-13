@@ -550,7 +550,7 @@
     },
     "manualPublish": {
       "name": "百家号",
-      "manualBadge": "手动发布",
+      "manualBadge": "需到平台发布",
       "capabilities": "文章 · 视频",
       "filterLabel": "按内容类型筛选频道",
       "filterAll": "全部频道",

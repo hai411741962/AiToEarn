@@ -98,6 +98,8 @@ In Add Channels, filter platforms by images/articles or videos. BaiJiaHao, CSDN,
 
 For local CSDN article publishing, run `pnpm install && pnpm start` in `scripts/local-publisher` on the same computer as the web browser. Keep the service running, then open Add Channels → CSDN → Article to add and verify each account. Browser profiles are stored locally under `.local-data/` in that directory and are not sent to the AiToEarn server. Set `LOCAL_PUBLISHER_DATA_DIR` for another private storage directory or `CHROME_PATH` to choose Chrome. If CSDN changes its page or requests manual verification, check submissions marked unverified in the CSDN dashboard.
 
+Articles & Videos follows a content-first flow: write an article, manage videos, or paste a public HTTPS article link to extract its title and text. Review the result and save an editable draft; choose connected channels and accounts only when you click Publish. If a site blocks extraction, open the original and paste its title and body manually while retaining the source link. Importing never publishes the original article.
+
 ![Publish](presentation/publish-cn.png) ![Channels](presentation/channel-cn.png)
 
 ▶ Demo video: [YouTube — Publish](https://www.youtube.com/watch?v=5041jEKaiU8)

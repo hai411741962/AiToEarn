@@ -97,6 +97,8 @@ AiToEarn 最核心的目标：帮助每一位创作者赚钱。创作者在平�
 
 CSDN 本机自动发文仅适用于在本机打开的网页。首次使用时，在 `scripts/local-publisher` 目录运行 `pnpm install && pnpm start`，保持服务运行；随后在「添加频道 → CSDN → 文章」中添加账号、打开各自的登录窗口并验证。每个账号的浏览器登录资料保存在该目录的 `.local-data/`，不会上传到 AiToEarn 服务端。可设置 `LOCAL_PUBLISHER_DATA_DIR` 将资料保存到其他私有目录，或设置 `CHROME_PATH` 指定 Chrome 路径。CSDN 页面变更或需要人工验证时，提交结果可能显示“待核实”，请到 CSDN 后台确认。
 
+「文章与视频管理」采用内容优先流程：先新建文章、管理视频，或粘贴公开 HTTPS 文章链接提取标题和正文，预览确认后保存为可编辑草稿；点击草稿的「去发布」时再选择已连接的频道与账号。来源网站若限制抓取，可打开原文并手动粘贴标题和正文，保留来源链接后保存草稿；导入不会自动发布。
+
 ![Publish](presentation/publish-cn.png) ![Channels](presentation/channel-cn.png)
 
 ▶ 演示视频：[YouTube — Publish](https://www.youtube.com/watch?v=5041jEKaiU8)

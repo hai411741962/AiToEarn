@@ -31,6 +31,7 @@ export interface FormParams {
 
 export interface UseCreateMaterialFormProps {
   groupId: string | null
+  contentFirst?: boolean
   editingMaterial?: PromotionMaterial | null
   isSubmitting?: boolean
   onClose: () => void
@@ -41,6 +42,7 @@ export function useCreateMaterialForm({
   groupId,
   editingMaterial,
   isSubmitting: externalSubmitting,
+  contentFirst = false,
   onClose,
   onSuccess,
 }: UseCreateMaterialFormProps) {
@@ -59,7 +61,7 @@ export function useCreateMaterialForm({
   )
 
   // 默认全选平台
-  const defaultPlatforms = useMemo(() => taskPlatforms.map(([p]) => p), [taskPlatforms])
+  const defaultPlatforms = useMemo(() => contentFirst ? [] : taskPlatforms.map(([p]) => p), [contentFirst, taskPlatforms])
   const defaultPlatformsAppliedRef = useRef(false)
 
   // 表单参数
@@ -133,7 +135,7 @@ export function useCreateMaterialForm({
         des: appendMaterialTopicsToDescription(editingMaterial.desc || '', editingMaterial.topics),
         video,
         images,
-        selectedPlatforms: editingMaterial.accountTypes?.length
+        selectedPlatforms: contentFirst ? [] : editingMaterial.accountTypes?.length
           ? (editingMaterial.accountTypes as PlatType[])
           : defaultPlatforms,
       })
@@ -147,7 +149,7 @@ export function useCreateMaterialForm({
         selectedPlatforms: defaultPlatforms,
       })
     }
-  }, [editingMaterial])
+  }, [contentFirst, editingMaterial, defaultPlatforms])
 
   // 更新参数
   const updateParams = useCallback((updates: Partial<FormParams>) => {
@@ -253,9 +255,7 @@ export function useCreateMaterialForm({
       return
     }
 
-    const titleRequired = params.selectedPlatforms.some(isPublishTitleSupported)
-
-    if (titleRequired && !params.title.trim()) {
+    if ((contentFirst || params.selectedPlatforms.some(isPublishTitleSupported)) && !params.title.trim()) {
       toast.error(t('createMaterial.titleRequired'))
       return
     }
@@ -268,6 +268,11 @@ export function useCreateMaterialForm({
     const hasVideo = !!params.video?.ossUrl
     const hasImages
       = params.images && params.images.length > 0 && params.images.some(img => img.ossUrl)
+
+    if (contentFirst && !hasVideo) {
+      toast.error(t('createMaterial.pleaseUploadMedia'))
+      return
+    }
 
     if (!hasVideo && !hasImages) {
       toast.error(t('createMaterial.pleaseUploadMedia'))

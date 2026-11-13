@@ -547,7 +547,7 @@
     },
     "manualPublish": {
       "name": "百家号",
-      "manualBadge": "手動投稿",
+      "manualBadge": "サイトで投稿",
       "capabilities": "記事 · 動画",
       "filterLabel": "コンテンツ形式でチャンネルを絞り込む",
       "filterAll": "すべて",

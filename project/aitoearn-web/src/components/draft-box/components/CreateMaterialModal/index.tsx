@@ -31,6 +31,8 @@ import { getMaterialUploadPlatType } from './utils'
 
 export interface CreateMaterialModalProps {
   open: boolean
+  /** 内容优先工作区：保存草稿时不预选发布平台。 */
+  contentFirst?: boolean
   /** 素材组 ID（草稿箱关联的素材组） */
   groupId: string | null
   /** 编辑模式下的素材数据 */
@@ -51,6 +53,7 @@ const CreateMaterialModalContent = memo(
     groupId,
     editingMaterial,
     isSubmitting: externalSubmitting,
+    contentFirst = false,
     onClose,
     onSuccess,
   }: Omit<CreateMaterialModalProps, 'open'>) => {
@@ -67,6 +70,7 @@ const CreateMaterialModalContent = memo(
       groupId,
       editingMaterial,
       isSubmitting: externalSubmitting,
+      contentFirst,
       onClose,
       onSuccess,
     })
@@ -82,12 +86,14 @@ const CreateMaterialModalContent = memo(
 
         <div className="flex max-h-[70vh] flex-col gap-4 overflow-y-auto py-4 pr-1">
           {/* 平台选择器 */}
-          <div className="px-1">
-            <InlinePlatformSelector
-              selectedPlatforms={params.selectedPlatforms}
-              onPlatformsChange={platforms => updateParams({ selectedPlatforms: platforms })}
-            />
-          </div>
+          {!contentFirst && (
+            <div className="px-1">
+              <InlinePlatformSelector
+                selectedPlatforms={params.selectedPlatforms}
+                onPlatformsChange={platforms => updateParams({ selectedPlatforms: platforms })}
+              />
+            </div>
+          )}
 
           {/* 提交后平台兼容性问题 */}
           {validationIssues.length > 0 && (
@@ -107,7 +113,7 @@ const CreateMaterialModalContent = memo(
               onChange={({ value, imgs, video }) => {
                 updateParams({ des: value, images: imgs || [], video })
               }}
-              toolbarExtra={(
+              toolbarExtra={!contentFirst ? (
                 <div className="px-1.5 border-l border-border first:border-l-0">
                   <Button
                     variant="ghost"
@@ -124,7 +130,7 @@ const CreateMaterialModalContent = memo(
                     {t('detail.agentGenerate')}
                   </Button>
                 </div>
-              )}
+              ) : undefined}
               extend={(
                 <div className="flex items-center h-10">
                   <label className="shrink-0 w-[60px] text-sm">

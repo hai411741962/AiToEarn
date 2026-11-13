@@ -90,6 +90,8 @@ AiToEarn の最重要目標：すべてのクリエイターが稼げるよう�
 
 CSDN のローカル自動投稿には、ウェブブラウザーと同じコンピューターで `scripts/local-publisher` に移動し、`pnpm install && pnpm start` を実行します。サービスを起動したまま「チャンネルを追加 → CSDN → 記事」でアカウントごとにログイン・確認してください。ブラウザーのログイン情報は同ディレクトリの `.local-data/` にのみ保存され、AiToEarn サーバーへ送信されません。保存先は `LOCAL_PUBLISHER_DATA_DIR`、Chrome の場所は `CHROME_PATH` で変更できます。投稿結果が未確認の場合は CSDN の管理画面で確認してください。
 
+「記事・動画管理」では、まず記事を作成するか、公開 HTTPS 記事リンクからタイトルと本文を抽出して確認し、編集可能な下書きとして保存します。公開するときに初めて接続済みチャンネルとアカウントを選択します。サイト側が抽出を制限する場合は原文を開いてタイトルと本文を手動で貼り付け、出典リンクを保持して下書きとして保存できます。取り込んだだけでは公開されません。
+
 ![Publish](presentation/publish-cn.png) ![Channels](presentation/channel-cn.png)
 
 ▶ デモ動画：[YouTube — Publish](https://www.youtube.com/watch?v=5041jEKaiU8)

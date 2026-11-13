@@ -71,9 +71,9 @@ export default function SchedulePage() {
           <p className="mt-2 text-sm text-muted-foreground">{t('scheduleDescription')}</p>
         </div>
         <Button asChild className="cursor-pointer rounded-full bg-gradient-back text-gradient-foreground">
-          <Link href="/accounts?action=publish">
+          <Link href="/draft-box">
             <Plus size={16} />
-            {t('createPublish')}
+            {t('content')}
           </Link>
         </Button>
       </header>
@@ -123,7 +123,7 @@ export default function SchedulePage() {
           <CalendarDays className="mx-auto mb-3 text-muted-foreground" />
           <h2 className="text-sm font-medium text-foreground">{t('emptySchedule')}</h2>
           <p className="mt-1 text-sm text-muted-foreground">{t('emptyScheduleDescription')}</p>
-          <Button asChild variant="outline" className="mt-4 cursor-pointer"><Link href="/accounts?action=publish">{t('createPublish')}</Link></Button>
+          <Button asChild variant="outline" className="mt-4 cursor-pointer"><Link href="/draft-box">{t('content')}</Link></Button>
         </div>
       )}
     </div>
