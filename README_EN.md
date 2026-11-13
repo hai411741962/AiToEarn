@@ -94,7 +94,9 @@ The core mission of AiToEarn: help every creator earn money. Creators sell conte
 
 Distribute content to 14+ major platforms with one click — no more manual posting on each platform. Plan and coordinate publishing across all platforms like a calendar.
 
-In Add Channels, filter platforms by images/articles or videos. BaiJiaHao, CSDN, and Zhihu have a manual preparation flow for articles and videos: edit and save text in the web app, then copy it and upload media in each platform's official dashboard. Direct in-app publishing to these three platforms is not yet connected.
+In Add Channels, filter platforms by images/articles or videos. BaiJiaHao, CSDN, and Zhihu provide manual preparation for articles and videos. CSDN articles also support a local publisher: add multiple accounts, sign in and verify each one, then select the target accounts. An article is marked published only when an article link is found. CSDN videos and content for BaiJiaHao and Zhihu still require manual submission.
+
+For local CSDN article publishing, run `pnpm install && pnpm start` in `scripts/local-publisher` on the same computer as the web browser. Keep the service running, then open Add Channels → CSDN → Article to add and verify each account. Browser profiles are stored locally under `.local-data/` in that directory and are not sent to the AiToEarn server. Set `LOCAL_PUBLISHER_DATA_DIR` for another private storage directory or `CHROME_PATH` to choose Chrome. If CSDN changes its page or requests manual verification, check submissions marked unverified in the CSDN dashboard.
 
 ![Publish](presentation/publish-cn.png) ![Channels](presentation/channel-cn.png)
 
