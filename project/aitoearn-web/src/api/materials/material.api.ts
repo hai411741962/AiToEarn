@@ -338,7 +338,7 @@ export async function apiGetMaterialList(groupId: string, pageNo: number, pageSi
   // 兼容代码，图文草稿补封面
   if (list && list.length > 0) {
     list.map((item) => {
-      if (item.mediaList[0].type === 'img') {
+      if (item.mediaList?.[0]?.type === 'img') {
         item.coverUrl = item.mediaList[0].url
       }
     })

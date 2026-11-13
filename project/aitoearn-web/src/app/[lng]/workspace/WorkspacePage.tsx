@@ -137,16 +137,16 @@ export function WorkspacePage() {
             <p className="mt-3 max-w-xl text-sm leading-6 text-muted-foreground">{t('workspaceDescription')}</p>
           </div>
           <Button asChild className="w-fit cursor-pointer rounded-full bg-gradient-back px-5 text-gradient-foreground">
-            <Link href="/accounts?action=publish">
+            <Link href="/draft-box">
               <Plus size={17} />
-              {t('createPublish')}
+              {t('content')}
             </Link>
           </Button>
         </div>
       </section>
       <section aria-label={t('workspaceSteps')} className="grid gap-3 md:grid-cols-3">
-        <ActionCard number="01" title={t('channels')} detail={accountListInitialized ? t('connectedCount', { count: connected }) : t('loading')} href="/channels" complete={connected > 0} />
-        <ActionCard number="02" title={t('content')} detail={t('contentStepDescription')} href="/draft-box" />
+        <ActionCard number="01" title={t('content')} detail={t('contentStepDescription')} href="/draft-box" />
+        <ActionCard number="02" title={t('channels')} detail={accountListInitialized ? t('connectedCount', { count: connected }) : t('loading')} href="/channels" complete={connected > 0} />
         <ActionCard number="03" title={t('schedule')} detail={t('scheduledCount', { count: summary.scheduled.length })} href="/schedule" />
       </section>
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1.6fr)_minmax(280px,1fr)]">
@@ -176,7 +176,7 @@ export function WorkspacePage() {
               <FileText className="mx-auto mb-3 text-muted-foreground" />
               <h3 className="text-sm font-medium text-foreground">{t('emptyRecords')}</h3>
               <p className="mt-1 text-sm text-muted-foreground">{t('emptyRecordsDescription')}</p>
-              <Button asChild variant="outline" className="mt-4 cursor-pointer"><Link href="/accounts?action=publish">{t('createPublish')}</Link></Button>
+              <Button asChild variant="outline" className="mt-4 cursor-pointer"><Link href="/draft-box">{t('content')}</Link></Button>
             </div>
           )}
         </section>

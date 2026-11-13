@@ -86,6 +86,7 @@
     "axios": "^1.9.0",
     "blueimp-md5": "^2.19.0",
     "browser-image-compression": "^2.0.2",
+    "cheerio": "^1.2.0",
     "chinese-days": "1.5.7",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
